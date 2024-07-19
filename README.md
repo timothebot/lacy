@@ -20,7 +20,11 @@ You can use `z` alongside lacy.
 
 ### Zsh / Bash
 
-Copy the function from the `shell.sh` file to your `.zshrc` or `.bashrc` file.
+Add the following to your `.zshrc` or `.bashrc` file:
+
+```shell
+eval "$(lacy init zsh)"
+```
 
 ## Todo
 
