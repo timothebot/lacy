@@ -39,7 +39,7 @@ fn find_matching_path(elements: Vec<String>, current_path: PathBuf) -> Option<Pa
     Some(path)
 }
 
-pub fn get_matching_path(args: &[String]) {
+pub fn get_matching_path(args: &[String]) -> String {
     let mut args = args.to_vec();
     let mut current_path = env::current_dir().expect("Failed to get current directory");
     let first_arg = args.first().expect("No arguments provided");
@@ -53,6 +53,7 @@ pub fn get_matching_path(args: &[String]) {
         args.remove(0);
     }
     if let Some(new_path) = find_matching_path(args, current_path) {
-        println!("{}", new_path.display());
+        return new_path.display().to_string();
     }
+    return String::new();
 }

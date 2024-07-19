@@ -9,7 +9,15 @@ pub fn get_shell_config(shell: &str) {
     else
         echo "Error: No matching directory found for '$*'"
     fi
-}}"#
+}}
+# Auto-completion for y function
+function _y {{
+    local dirs
+    dirs=$(lacy complete "$words")
+    dirs=(${{(s: :)dirs}})
+    compadd $dirs
+}}
+compdef _y y"#
             );
         }
         _ => {

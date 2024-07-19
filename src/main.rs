@@ -1,7 +1,9 @@
 use clap::{Parser, Subcommand};
+use complete::complete_path;
 use init::get_shell_config;
 use prompt::get_matching_path;
 
+mod complete;
 mod init;
 mod prompt;
 
@@ -17,7 +19,7 @@ struct LacyCli {
 enum Commands {
     Prompt { path: String },
     Init { shell: String },
-    Complete,
+    Complete { path: String },
 }
 
 fn main() {
@@ -26,13 +28,11 @@ fn main() {
     match cli.command {
         Commands::Prompt { path } => {
             let args: Vec<String> = path.split(' ').map(|s| s.to_string()).collect();
-            get_matching_path(&args);
+            println!("{}", get_matching_path(&args));
         }
-        Commands::Init { shell } => {
-            get_shell_config(shell.as_str())
-        }
-        Commands::Complete => {
-            println!("TODO Complete");
+        Commands::Init { shell } => get_shell_config(shell.as_str()),
+        Commands::Complete { path } => {
+            println!("{}", complete_path(path.as_str()));
         }
     }
 }
