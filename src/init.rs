@@ -5,7 +5,6 @@ pub fn get_shell_config(shell: &str) {
                 r#"function y {{
     new_path=$(lacy prompt "$*")
     if [ -d "$new_path" ]; then
-        echo $new_path
         cd "$new_path"
     else
         echo "Error: No matching directory found for '$*'"
