@@ -13,7 +13,9 @@ pub fn get_shell_config(shell: &str) {
 # Auto-completion for y function
 function _y {{
     local dirs
-    dirs=$(lacy complete "$words")
+    dirs=$(lacy complete "$*")
+    echo "$dirs"
+    echo "$*"
     dirs=(${{(s: :)dirs}})
     compadd $dirs
 }}
