@@ -1,4 +1,4 @@
-use crate::prompt::get_matching_path;
+use crate::command::prompt::get_matching_path;
 
 fn list_dirs(path: &str) -> String {
     let mut dirs = String::new();
