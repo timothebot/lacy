@@ -14,8 +14,6 @@ pub fn get_shell_config(shell: &str) {
 function _y {{
     local dirs
     dirs=$(lacy complete "$*")
-    echo "$dirs"
-    echo "$*"
     dirs=(${{(s: :)dirs}})
     compadd $dirs
 }}
