@@ -6,6 +6,7 @@ use prompt::get_matching_path;
 mod complete;
 mod init;
 mod prompt;
+mod ui;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
