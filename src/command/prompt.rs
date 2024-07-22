@@ -140,11 +140,16 @@ fn find_matching_path(parts: Vec<String>, current_path: PathBuf) -> Option<PathB
 pub fn get_matching_path(args: &[String]) -> String {
     let mut args = args.to_vec();
     let mut current_path = env::current_dir().expect("Failed to get current directory");
-    let first_arg = args.first().expect("No arguments provided");
+    let first_arg = args.first().unwrap_or(&String::from("")).clone();
+    if *&first_arg.is_empty() {
+        return current_path.display().to_string();
+    }
 
-    if first_arg == "/" {
+    if first_arg.starts_with("/") {
         current_path = PathBuf::from("/");
-        args.remove(0);
+        if first_arg.len() == 1 {
+            args.remove(0);
+        }
     } else if first_arg.starts_with("..") {
         for _ in 0..first_arg.matches(".").count() - 1 {
             current_path.pop();
