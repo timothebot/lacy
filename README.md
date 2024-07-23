@@ -19,9 +19,9 @@ You can use `z` alongside lacy.
 
 ## Installation
 
-### Zsh / Bash
+### Zsh
 
-Add the following to your `.zshrc` or `.bashrc` file:
+Add the following to your `.zshrc` file:
 
 ```shell
 eval "$(lacy init zsh)"
@@ -30,7 +30,8 @@ eval "$(lacy init zsh)"
 ## Todo
 
 -   [x] Add support for `..`
--   [ ] Add support for `~` and `~username` paths
--   [ ] Add support for "real" paths (e.g. `/Users/timo/ desk proj lacy`)
+-   [x] Add support for `~`
+-   [x] Add support for "real" paths (e.g. `/Users/timo/ desk proj lacy`)
 -   [ ] Add ability to skip a directory
 -   [ ] Add tests
+-   [ ] Add aliases
