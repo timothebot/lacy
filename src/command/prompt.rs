@@ -172,6 +172,9 @@ pub fn get_matching_path(args: &[String]) -> String {
             current_path.pop();
         }
         args.remove(0);
+    } else if first_arg == "~" {
+        current_path = PathBuf::from(env::var("HOME").unwrap());
+        args.remove(0);
     }
     if let Some(new_path) = find_matching_path(args, current_path) {
         return new_path.display().to_string();
