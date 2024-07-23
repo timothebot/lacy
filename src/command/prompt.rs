@@ -5,6 +5,8 @@ use std::path::PathBuf;
 
 use crate::ui;
 
+type ScoredPath = (PathBuf, i32);
+
 /// Check if a directory is a match for a given part and return a score
 fn lazy_path_matching(dir: &str, part: &str, real_path: &bool) -> i32 {
     let mut score = 0;
@@ -39,7 +41,7 @@ fn resolve_path_part(
     part: &String,
     current_path: PathBuf,
     real_path: bool,
-) -> Result<PathBuf, Option<Vec<(PathBuf, i32)>>> {
+) -> Result<PathBuf, Option<Vec<ScoredPath>>> {
     let dirs_res = fs::read_dir(&current_path);
     let Ok(dirs) = dirs_res else {
         return Result::Err(None);
@@ -84,7 +86,7 @@ fn resolve_path_part(
     // everything below the average score is discarded
     let average_score: f32 = scored_dirs.values().sum::<i32>() as f32 / scored_dirs.len() as f32;
     // sort by score
-    let mut paths: Vec<(PathBuf, i32)> = scored_dirs
+    let mut paths: Vec<ScoredPath> = scored_dirs
         .iter()
         .filter(|(_, score)| **score as f32 >= average_score)
         .map(|(dir, score)| {
@@ -103,7 +105,7 @@ fn resolve_path_part(
 }
 
 /// select one of the given paths
-fn choose_path(possible_paths: Vec<(PathBuf, i32)>) -> PathBuf {
+fn choose_path(possible_paths: Vec<ScoredPath>) -> PathBuf {
     let possible_paths_str: Vec<String> = possible_paths
         .iter()
         .map(|path| format!("{}: {}", path.1, path.0.to_str().unwrap()))
@@ -123,8 +125,8 @@ fn choose_path(possible_paths: Vec<(PathBuf, i32)>) -> PathBuf {
 fn find_matching_path(
     parts: Vec<String>,
     current_path: PathBuf,
-    with_select: bool,
-) -> Option<PathBuf> {
+    only_one_match: bool,
+) -> Result<PathBuf, Option<Vec<ScoredPath>>> {
     let mut path = current_path;
 
     for part in parts {
@@ -136,11 +138,11 @@ fn find_matching_path(
                         path = new_path;
                     }
                     Err(None) => {
-                        return None;
+                        return Err(None);
                     }
                     Err(Some(possible_paths)) => {
-                        if !with_select {
-                            return None;
+                        if !only_one_match {
+                            return Err(Some(possible_paths));
                         }
                         path = choose_path(possible_paths);
                     }
@@ -154,22 +156,22 @@ fn find_matching_path(
                 path = new_path;
             }
             Err(None) => {
-                return None;
+                return Err(None);
             }
             Err(Some(possible_paths)) => {
-                if !with_select {
-                    return None;
+                if !only_one_match {
+                    return Err(Some(possible_paths));
                 }
                 path = choose_path(possible_paths);
             }
         }
     }
 
-    Some(path)
+    Ok(path)
 }
 
 /// Get a matching path by the given arguments
-pub fn get_matching_path(args: &[String], with_select: bool) -> String {
+pub fn get_matching_path(args: &[String], only_one_match: bool) -> String {
     let mut args = args.to_vec();
     let mut current_path = env::current_dir().expect("Failed to get current directory");
     let first_arg = args.first().unwrap_or(&String::from("")).clone();
@@ -191,8 +193,15 @@ pub fn get_matching_path(args: &[String], with_select: bool) -> String {
         current_path = PathBuf::from(env::var("HOME").unwrap());
         args.remove(0);
     }
-    if let Some(new_path) = find_matching_path(args, current_path, with_select) {
-        return new_path.display().to_string();
+    let new_path = find_matching_path(args, current_path, only_one_match);
+    match new_path {
+        Ok(path) => return path.display().to_string(),
+        Err(None) => return String::new(),
+        Err(Some(possible_paths)) => {
+            return possible_paths
+                .iter()
+                .map(|path| path.0.display().to_string())
+                .collect();
+        }
     }
-    return String::new();
 }
