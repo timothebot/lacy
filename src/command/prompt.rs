@@ -108,14 +108,23 @@ fn choose_path(possible_paths: Vec<(PathBuf, i32)>) -> PathBuf {
         .iter()
         .map(|path| format!("{}: {}", path.1, path.0.to_str().unwrap()))
         .collect();
-    PathBuf::from(ui::select(
-        "Multiple possibilities found",
-        possible_paths_str.iter().map(|s| s.as_str()).collect(),
-    ))
+    PathBuf::from(
+        ui::select(
+            "Multiple possibilities found",
+            possible_paths_str.iter().map(|s| s.as_str()).collect(),
+        )
+        .split(": ")
+        .last()
+        .unwrap(),
+    )
 }
 
 /// Loop through all parts of the given path and return the matching path
-fn find_matching_path(parts: Vec<String>, current_path: PathBuf) -> Option<PathBuf> {
+fn find_matching_path(
+    parts: Vec<String>,
+    current_path: PathBuf,
+    with_select: bool,
+) -> Option<PathBuf> {
     let mut path = current_path;
 
     for part in parts {
@@ -130,6 +139,9 @@ fn find_matching_path(parts: Vec<String>, current_path: PathBuf) -> Option<PathB
                         return None;
                     }
                     Err(Some(possible_paths)) => {
+                        if !with_select {
+                            return None;
+                        }
                         path = choose_path(possible_paths);
                     }
                 }
@@ -145,6 +157,9 @@ fn find_matching_path(parts: Vec<String>, current_path: PathBuf) -> Option<PathB
                 return None;
             }
             Err(Some(possible_paths)) => {
+                if !with_select {
+                    return None;
+                }
                 path = choose_path(possible_paths);
             }
         }
@@ -154,7 +169,7 @@ fn find_matching_path(parts: Vec<String>, current_path: PathBuf) -> Option<PathB
 }
 
 /// Get a matching path by the given arguments
-pub fn get_matching_path(args: &[String]) -> String {
+pub fn get_matching_path(args: &[String], with_select: bool) -> String {
     let mut args = args.to_vec();
     let mut current_path = env::current_dir().expect("Failed to get current directory");
     let first_arg = args.first().unwrap_or(&String::from("")).clone();
@@ -176,7 +191,7 @@ pub fn get_matching_path(args: &[String]) -> String {
         current_path = PathBuf::from(env::var("HOME").unwrap());
         args.remove(0);
     }
-    if let Some(new_path) = find_matching_path(args, current_path) {
+    if let Some(new_path) = find_matching_path(args, current_path, with_select) {
         return new_path.display().to_string();
     }
     return String::new();

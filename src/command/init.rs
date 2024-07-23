@@ -13,7 +13,8 @@ pub fn get_shell_config(shell: &str) {
 # Auto-completion for y function
 function _y {{
     local dirs
-    dirs=$(lacy complete "$*")
+    args="${{words[@]:1}}"
+    dirs=$(lacy complete "$args")
     dirs=(${{(s: :)dirs}})
     compadd $dirs
 }}

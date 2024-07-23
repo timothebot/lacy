@@ -16,7 +16,7 @@ impl LacyCli {
         match cli.command {
             Commands::Prompt { path } => {
                 let args: Vec<String> = path.split(' ').map(|s| s.to_string()).collect();
-                println!("{}", get_matching_path(&args));
+                println!("{}", get_matching_path(&args, true));
             }
             Commands::Init { shell } => get_shell_config(shell.as_str()),
             Commands::Complete { path } => {
