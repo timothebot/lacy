@@ -151,14 +151,33 @@ fn find_matching_path(
 
     let res;
     if part == "-" {
+        let mut depth = 1;
         if new_parts.is_empty() {
             return Result::Err(None);
         }
-        let next_part = new_parts.remove(0);
-        res = resolve_path_part(&next_part, find_possible_dirs(&current_path, 1), true);
+        let mut next_normal_path = String::new();
+        for next_part in new_parts.clone() {
+            if next_part == "-" {
+                depth += 1;
+                new_parts.remove(0);
+            } else {
+                next_normal_path = new_parts.remove(0);
+                break;
+            }
+        }
+        if next_normal_path.is_empty() {
+            return Result::Err(None);
+        }
+        res = resolve_path_part(
+            &next_normal_path,
+            find_possible_dirs(&current_path, depth),
+            true,
+        );
     } else if part.contains("/") {
-        let first_subpart = part.split("/").next().unwrap();
-        new_parts.insert(0, part.split("/").skip(1).collect::<Vec<&str>>().join("/"));
+        // split and remove empty strings
+        let mut subparts: Vec<&str> = part.split("/").filter(|s| !s.is_empty()).collect();
+        let first_subpart = subparts.remove(0);
+        new_parts.insert(0, subparts.join("/"));
         res = resolve_path_part(
             &first_subpart.to_string(),
             find_possible_dirs(&current_path, 0),
@@ -325,6 +344,13 @@ mod tests {
             ),
             abs_path("test/alpha/betabeta/epsil#on/eta4")
         );
+        assert_eq!(
+            get_matching_path(
+                &args_to_string(vec!["test", "alpha", "-", "-", "et4"]),
+                false
+            ),
+            abs_path("test/alpha/betabeta/epsil#on/eta4")
+        );
     }
 
     #[test]
@@ -345,19 +371,16 @@ mod tests {
     #[test]
     fn test_real_paths() {
         assert_eq!(
-            get_matching_path(&args_to_string(vec!["test", "alpha/beta", "thet3"]), false),
-            abs_path("test/alpha/beta/theta3")
+            get_matching_path(&args_to_string(vec!["test", "alpha/beta", "del6"]), false),
+            abs_path("test/alpha/beta/delta6")
         );
         assert_eq!(
-            get_matching_path(&args_to_string(vec!["test", "/alpha/beta", "thet3"]), false),
-            abs_path("test/alpha/beta/theta3")
+            get_matching_path(&args_to_string(vec!["test", "/alpha/beta", "del6"]), false),
+            abs_path("test/alpha/beta/delta6")
         );
         assert_eq!(
-            get_matching_path(
-                &args_to_string(vec!["test", "/alpha/beta/", "thet3"]),
-                false
-            ),
-            abs_path("test/alpha/beta/theta3")
+            get_matching_path(&args_to_string(vec!["test", "/alpha/beta/", "del6"]), false),
+            abs_path("test/alpha/beta/delta6")
         );
     }
 }
