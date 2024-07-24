@@ -10,7 +10,7 @@ type ScoredPath = (PathBuf, i32);
 fn lazy_path_matching(dir: &str, part: &str, real_path: &bool) -> i32 {
     let mut score = 0;
     let dir = dir.split("/").last().unwrap_or("");
-    if *real_path {
+    if real_path == &true {
         if dir.to_lowercase().starts_with(part.to_lowercase().as_str()) {
             score += 20;
         }
@@ -58,12 +58,21 @@ fn resolve_path_part(
     // everything below the average score is discarded
     let average_score: f32 = scored_dirs
         .iter()
-        .map(|(_, score)| *score as i32)
-        .sum::<i32>() as f32
+        .map(|(_, score)| *score as f32)
+        .sum::<f32>()
         / scored_dirs.len() as f32;
+
+    let highest_score_split = scored_dirs
+        .iter()
+        .map(|(_, score)| score)
+        .max()
+        .unwrap_or(&0)
+        / 2;
     let mut paths: Vec<ScoredPath> = scored_dirs
         .iter()
-        .filter(|scored_path| scored_path.1 as f32 >= average_score)
+        .filter(|scored_path| {
+            scored_path.1 as f32 >= average_score && scored_path.1 >= highest_score_split
+        })
         .map(|(dir, score)| (dir.clone(), *score))
         .collect();
 
@@ -129,6 +138,7 @@ fn score_possible_dirs(
             let score = lazy_path_matching(dir.to_str().unwrap(), part, &real_path);
             return (dir.clone(), score);
         })
+        .filter(|(_, score)| *score > 0)
         .collect()
 }
 
@@ -171,7 +181,7 @@ fn find_matching_path(
         res = resolve_path_part(
             &next_normal_path,
             find_possible_dirs(&current_path, depth),
-            true,
+            false,
         );
     } else if part.contains("/") {
         // split and remove empty strings
