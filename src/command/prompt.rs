@@ -361,6 +361,10 @@ mod tests {
             ),
             abs_path("test/alpha/betabeta/epsil#on/eta4")
         );
+        assert_eq!(
+            get_matching_path(&args_to_string(vec!["-", "alpha"]), false),
+            abs_path("test/alpha")
+        );
     }
 
     #[test]
