@@ -1,9 +1,10 @@
 pub fn get_shell_config(shell: &str) {
     match shell {
-        "zsh" | "bash" => {
+        "zsh" => {
             println!(
-                r#"function y {{
-    new_path=$(lacy prompt "$*")
+                r#"
+function y {{
+    new_path=$(lacy prompt -- "$*")
     if [ -d "$new_path" ]; then
         cd "$new_path"
     else
@@ -14,7 +15,7 @@ pub fn get_shell_config(shell: &str) {
 function _y {{
     local dirs
     args="${{words[@]:1}}"
-    dirs=$(lacy complete "$args")
+    dirs=$(lacy complete -- "$args")
     dirs=(${{(s: :)dirs}})
     compadd $dirs
 }}
