@@ -205,6 +205,9 @@ fn find_matching_path(
             return Result::Err(None);
         }
         Err(Some(possible_paths)) => {
+            if possible_paths.is_empty() {
+                return Result::Err(None);
+            }
             if !only_one_match {
                 return Result::Err(Some(possible_paths));
             }
@@ -304,6 +307,17 @@ mod tests {
         assert_eq!(
             get_matching_path(&args_to_string(vec!["..", "lacy"]), false),
             abs_path("")
+        );
+    }
+
+    #[test]
+    fn test_nonexisting() {
+        assert_eq!(
+            get_matching_path(
+                &args_to_string(vec!["test", "zzzzzzzzz", "zzzzzzzzz"]),
+                true
+            ),
+            String::new()
         );
     }
 
