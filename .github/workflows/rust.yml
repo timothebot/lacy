@@ -21,3 +21,6 @@ jobs:
       run: python test_env.py
     - name: Run tests
       run: cargo test --verbose
+    - name: Rust Release binary
+      uses: rust-build/rust-build.action@v1.4.5
+            
