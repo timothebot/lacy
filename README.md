@@ -2,7 +2,7 @@
 
 Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
 
-## Example
+## Examples
 
 ```shell
 // normal cd
