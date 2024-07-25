@@ -4,18 +4,15 @@ Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy 
 
 ## Examples
 
-```shell
-// normal cd
+![Example 0](docs/assets/example_0.webp)
+
+```sh
+# normal cd
 $ cd /Users/timothebot/Desktop/projects/lacy/src
 
-// with lacy
+# with lacy
 $ y / user timo desk proj lacy sr
 ```
-
-## Why not `z`?
-
-`z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate.
-You can use `z` alongside lacy.
 
 ## Installation
 
@@ -27,11 +24,16 @@ Add the following to your `.zshrc` file:
 eval "$(lacy init zsh)"
 ```
 
+## Why not `z`?
+
+`z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate.
+You can use `z` alongside lacy.
+
 ## Todo
 
 -   [x] Add support for `..`
 -   [x] Add support for `~`
 -   [x] Add support for "real" paths (e.g. `/Users/timo/ desk proj lacy`)
--   [ ] Add ability to skip a directory
+-   [x] Add ability to skip a directory
 -   [ ] Add tests
 -   [ ] Add aliases
