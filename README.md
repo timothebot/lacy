@@ -2,13 +2,15 @@
 
 Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
 
+> Lacy is WIP! You can only use it by building it yourself. Brew and others are coming soon.
+
 ## Examples
 
 ![Example 0](docs/assets/example_0.webp)
 
 ### Navigation without full path
 
-You don't have to type the full directory name.  
+You don't have to type the full directory name.
 Just make sure the path matches the directory name more or less.
 
 ```sh
