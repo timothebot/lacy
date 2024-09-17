@@ -88,6 +88,12 @@ fn resolve_path_part(
 
 /// select one of the given paths
 fn choose_path(possible_paths: Vec<ScoredPath>) -> PathBuf {
+    if possible_paths.is_empty() {
+        return PathBuf::new();
+    }
+    if possible_paths.len() == 1 {
+        return possible_paths[0].0.clone();
+    }
     let possible_paths_str: Vec<String> = possible_paths
         .iter()
         .map(|path| format!("{}: {}", path.1, path.0.to_str().unwrap()))
