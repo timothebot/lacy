@@ -3,7 +3,7 @@
 Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
 
 > Lacy is WIP! Please report any issues you encounter. Don't expect it to work perfectly yet.
-> (I'm using it daily, it won't break/harm your system, but will sometimes throw an error)
+> (I'm using it daily, it won't break/harm your system, but will sometimes throw an error... working on it)
 
 ## Examples
 
@@ -86,4 +86,5 @@ You can use `z` alongside lacy.
 -   [ ] Add more tests
 -   [ ] Fix a lot of bugs
 -   [ ] Add aliases
+-   [ ] Add git cliff
 -   [ ] Add support for more shells
