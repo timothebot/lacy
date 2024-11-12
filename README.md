@@ -2,7 +2,8 @@
 
 Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
 
-> Lacy is WIP! You can only use it by building it yourself. Brew and others are coming soon.
+> Lacy is WIP! Please report any issues you encounter. Don't expect it to work perfectly yet.
+> (I'm using it daily, it won't break/harm your system, but will sometimes throw an error)
 
 ## Examples
 
@@ -56,7 +57,7 @@ y /Users/timo/ desk proj lacy/src
 
 ```sh
 # macOS or Linux
-brew install lacy
+cargo install lacy
 ```
 
 ### Zsh
@@ -83,4 +84,6 @@ You can use `z` alongside lacy.
 -   [x] Add support for "real" paths (e.g. `/Users/timo/ desk proj lacy`)
 -   [x] Add ability to skip a directory
 -   [ ] Add more tests
+-   [ ] Fix a lot of bugs
 -   [ ] Add aliases
+-   [ ] Add support for more shells
