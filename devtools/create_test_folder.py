@@ -1,6 +1,6 @@
 import os
 
-test_dir = "test"
+test_dir = "../test"
 dir_list = [
     "alpha/beta/gamma3",
     "alpha/beta/delta6",
@@ -45,4 +45,3 @@ for dir in dir_list:
     os.makedirs(path, exist_ok=True)
 
 print("Directories created successfully.")
-
