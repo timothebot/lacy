@@ -1,7 +1,18 @@
 [package]
 name = "lacy"
+description = "Fast magical cd alternative for lacy terminal navigators"
 version = "0.1.0"
+authors =  ["timothebot"]
+repository = "https://github.com/timothebot/lacy"
+homepage = "https://github.com/timothebot/lacy"
 edition = "2021"
+readme = "README.md"
+license-file = "LICENSE"
+exclude = [
+    ".github/*",
+    "test/*",
+    "devtools/*"
+]
 
 [dependencies]
 clap = { version = "4.5.9", features = ["derive"] }
