@@ -4,13 +4,13 @@ use fuzzy_matcher::clangd::fuzzy_match;
 
 
 #[derive(Debug)]
-struct PathNode {
+pub struct PathNode {
     location: PathBuf,
     score: i64,
 }
 
-pub fn resolve_query(query: &str) -> Vec<PathNode> {
-    let prepared_query = query.replace(" ", "/");
+pub fn resolve_query(query: &str) -> Vec<PathBuf> {
+    let prepared_query = query.replace(" ", "/").replace("//", "/");
     let mut query_parts: Vec<&str> = prepared_query.split("/").collect();
 
     if query_parts.is_empty() {
@@ -23,12 +23,15 @@ pub fn resolve_query(query: &str) -> Vec<PathNode> {
     };
 
     get_matching_paths(
-        vec!(PathNode {
-            location: get_start_location(first_query_part),
-            score: 0,
-        }),
-        &mut query_parts
-    )
+            vec!(PathNode {
+                location: get_start_location(first_query_part),
+                score: 0,
+            }),
+            &mut query_parts
+        )
+        .iter()
+        .map(|path_node| path_node.location.clone())
+        .collect()
 }
 
 fn get_start_location(first_query_part: &str) -> PathBuf {
@@ -146,4 +149,148 @@ fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> V
         query
     );
 
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn current_path() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+    }
+
+    fn abs_path(path: &str) -> PathBuf {
+        let mut path = PathBuf::from(path);
+        if !path.is_absolute() {
+            path = current_path().join(path);
+        }
+        path
+    }
+
+    fn args_to_string(args: Vec<&str>) -> Vec<String> {
+        args.iter().map(|s| s.to_string()).collect()
+    }
+
+    #[test]
+    fn test_basic() {
+        assert_eq!(
+            resolve_query(""),
+            vec![abs_path("")]
+        );
+        assert_eq!(
+            resolve_query("test"),
+            vec![abs_path("test")]
+        );
+        assert_eq!(
+            resolve_query("tes"),
+            vec![abs_path("test")]
+        );
+        assert_eq!(
+            resolve_query("es"),
+            vec![abs_path("test")]
+        );
+        assert_eq!(
+            resolve_query("/"),
+            vec![abs_path("/")]
+        );
+        assert_eq!(
+            resolve_query(".. lacy"),
+            vec![abs_path("")]
+        );
+    }
+
+    #[test]
+    fn test_with_slash_at_end() {
+        assert_eq!(
+            resolve_query("test/"),
+            vec![abs_path("test")]
+        );
+    }
+
+    #[test]
+    fn test_nonexisting() {
+        assert_eq!(
+            resolve_query("test zzzzzzzzz zzzzzzzzz"),
+            vec![String::new()]
+        );
+    }
+
+    #[test]
+    fn test_alpha() {
+        assert_eq!(
+            resolve_query("test alp alp"),
+            vec![abs_path("test/alpha/alpha")]
+        );
+        assert_eq!(
+            resolve_query("tst eps bta om9 0"),
+            vec![abs_path("test/epsilon/beta/omega9/alpha0")]
+        );
+        assert_eq!(
+            resolve_query("test delta gamma"),
+            vec![abs_path("test/delta/gamma7")]
+        );
+    }
+
+    #[test]
+    fn test_multiple_matches() {
+        assert_eq!(
+            resolve_query("test alpha beta a"),
+            vec![
+                abs_path("test/alpha/beta/delta6"),
+                abs_path("test/alpha/beta/gamma3"),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_dir_skip() {
+        assert_eq!(
+            resolve_query("test gamma - u"),
+            vec!(
+                abs_path("test/gamma/sigm#a/upsilon3"),
+                abs_path("test/gamma/sigma9/t@u0"),
+            )
+        );
+        assert_eq!(
+            resolve_query("test alpha - epsil#on et4"),
+            vec![abs_path("test/alpha/betabeta/epsil#on/eta4")]
+        );
+        assert_eq!(
+            resolve_query("test alpha - - et4"),
+            vec![abs_path("test/alpha/betabeta/epsil#on/eta4")]
+        );
+        assert_eq!(
+            resolve_query("- alpha"),
+            vec![abs_path("test/alpha")]
+        );
+    }
+
+    #[test]
+    fn test_numeric_suffixes() {
+        assert_eq!(
+            resolve_query("test epsilon beta beta2 3"),
+            vec![abs_path("test/epsilon/beta/beta2/gamma3")]
+        );
+        assert_eq!(
+            resolve_query("test beta 9"),
+            vec![abs_path("test/beta/mu9")]
+        );
+    }
+
+    #[test]
+    fn test_real_paths() {
+        assert_eq!(
+            resolve_query("test alpha/beta del6"),
+            vec![abs_path("test/alpha/beta/delta6")]
+        );
+        assert_eq!(
+            resolve_query("test /alpha/beta del6"),
+            vec![abs_path("test/alpha/beta/delta6")]
+        );
+        assert_eq!(
+            resolve_query("test /alpha/beta/ del6"),
+            vec![abs_path("test/alpha/beta/delta6")]
+        );
+    }
 }
