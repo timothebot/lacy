@@ -7,6 +7,7 @@ pub struct PathNode {
     score: i32,
 }
 
+/// Get a list of matching directories for the given query
 pub fn resolve_query(query: &str) -> Vec<PathBuf> {
     let prepared_query = query.replace(" ", "/").replace("//", "/");
     if prepared_query == "" {
@@ -122,7 +123,8 @@ fn get_all_directories_in(path: &PathBuf) -> Vec<PathBuf> {
     .collect()
 }
 
-// input path buf
+/// Get all directories in the given path with their score compared to the query
+/// Returns all directories when query is -
 fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
     let directories = get_all_directories_in(path);
 
@@ -158,7 +160,9 @@ fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
     return scored_dirs;
 }
 
-// take an array of PathBufs and the query, recursive
+/// Takes an array of paths and searches them recursivly until all parts of the query
+/// are checked and then returns the results.
+/// Only high scoring paths are returned.
 fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> Vec<PathNode> {
     // if query is empty, return paths
     if query.is_empty() {
