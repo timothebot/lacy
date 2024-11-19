@@ -1,8 +1,7 @@
 use clap::{Parser, Subcommand};
 
-use crate::command::{complete::complete_path, init::get_shell_config, query::resolve_query};
+use crate::{init::get_shell_config, query::resolve_query};
 
-/// Simple program to greet a person
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct LacyCli {
