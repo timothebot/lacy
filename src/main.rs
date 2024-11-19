@@ -1,6 +1,8 @@
-use command::cmd::LacyCli;
+use cmd::LacyCli;
 
-mod command;
+mod query;
+mod init;
+mod cmd;
 mod ui;
 
 fn main() {
