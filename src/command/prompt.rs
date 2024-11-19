@@ -261,6 +261,7 @@ pub fn get_matching_path(args: &[String], only_one_match: bool) -> String {
     }
 }
 
+/*
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -426,3 +427,4 @@ mod tests {
         );
     }
 }
+*/

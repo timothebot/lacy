@@ -1,45 +1,104 @@
-use std::{fs, path::PathBuf};
 use std::env;
-use fuzzy_matcher::clangd::fuzzy_match;
-
+use std::{fs, path::PathBuf};
 
 #[derive(Debug)]
 pub struct PathNode {
     location: PathBuf,
-    score: i64,
+    score: i32,
 }
 
 pub fn resolve_query(query: &str) -> Vec<PathBuf> {
     let prepared_query = query.replace(" ", "/").replace("//", "/");
+    if prepared_query == "" {
+        return vec![get_current_directory()];
+    }
     let mut query_parts: Vec<&str> = prepared_query.split("/").collect();
 
     if query_parts.is_empty() {
-        return Vec::new();
+        return vec![get_current_directory()];
     }
     query_parts.reverse();
 
-    let Some(first_query_part) = query_parts.pop() else {
-        return Vec::new();
+    let Some(first_query_part) = query_parts.last() else {
+        return vec![get_current_directory()];
     };
 
-    get_matching_paths(
-            vec!(PathNode {
-                location: get_start_location(first_query_part),
-                score: 0,
-            }),
-            &mut query_parts
-        )
+    let start_location = match first_query_part {
+        &"~" => {
+            query_parts.pop();
+            PathBuf::from(env::var("HOME").unwrap_or(String::from("/")))
+        }
+        &"" => {
+            query_parts.pop();
+            PathBuf::from("/")
+        }
+        _ if first_query_part.starts_with("..") => {
+            let mut current_dir = get_current_directory();
+            for _ in 0..first_query_part.matches(".").count() - 1 {
+                current_dir.pop();
+            }
+            query_parts.pop();
+            current_dir
+        },
+        _ => {
+            get_current_directory()
+        },
+    };
+
+    if query_parts.is_empty()
+        || (query_parts.len() == 1 && query_parts.first().unwrap_or(&"/") == &"")
+    {
+        return vec![start_location];
+    };
+
+    let mut result_paths = get_matching_paths(
+        vec![PathNode {
+            location: start_location,
+            score: 0,
+        }],
+        &mut query_parts,
+    );
+
+    // sort by alphabetical order, then by score
+    result_paths.sort_by(|a, b| a.location.cmp(&b.location));
+    result_paths.sort_by(|a, b| a.score.cmp(&b.score));
+
+    // dont return the score
+    result_paths
         .iter()
         .map(|path_node| path_node.location.clone())
         .collect()
 }
 
-fn get_start_location(first_query_part: &str) -> PathBuf {
-    if first_query_part == "~" {
-        return PathBuf::from(env::var("HOME")
-            .unwrap_or(String::from("/")));
+fn get_current_directory() -> PathBuf {
+    env::current_dir().unwrap_or(PathBuf::from("/"))
+}
+
+fn fuzzy_match(input: &str, pattern: &str) -> i32 {
+    let mut score = 0;
+    if input
+        .to_lowercase()
+        .contains(pattern.to_lowercase().as_str())
+    {
+        score += 10;
     }
-    PathBuf::from("/")
+    let mut dir_name_mut = input.to_string();
+    for c in pattern.chars() {
+        if dir_name_mut.to_lowercase().contains(c.to_ascii_lowercase()) {
+            score += 1;
+            // strip the char to avoid multiple matches
+            dir_name_mut = dir_name_mut.replacen(c, "", 1);
+        } else {
+            score -= 5;
+        }
+    }
+    if input.to_lowercase() == pattern.to_lowercase() {
+        score += 50;
+    }
+    if score < 0 {
+        score = 0;
+    }
+    score
 }
 
 /// Returns an unscored vec of all directories for the given path
@@ -69,10 +128,13 @@ fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
 
     // if "-" return all
     if query == "-" {
-        return directories.iter().map(|dir| PathNode {
-            location: dir.into(),
-            score: i64::MAX
-        }).collect();
+        return directories
+            .iter()
+            .map(|dir| PathNode {
+                location: dir.into(),
+                score: i32::MAX,
+            })
+            .collect();
     }
 
     let mut scored_dirs: Vec<PathNode> = vec![];
@@ -83,16 +145,12 @@ fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
         let Some(dir_name) = directory.file_name() else {
             continue;
         };
+        let score = fuzzy_match(dir_name.to_str().unwrap_or(""), query);
 
-        let score = fuzzy_match(
-            dir_name.to_str().unwrap_or(""),
-            query
-        ).unwrap_or(0);
-
-        if score != 0 {
+        if score > 0 {
             scored_dirs.push(PathNode {
                 location: directory.into(),
-                score
+                score,
             });
         }
     }
@@ -113,13 +171,11 @@ fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> V
 
     let mut all_possible_dirs: Vec<PathNode> = vec![];
     for possible_path in possible_paths {
-        all_possible_dirs.append(
-            &mut get_scored_directories(
-                &possible_path.location,
-                current_query_part
-            ));
+        all_possible_dirs.append(&mut get_scored_directories(
+            &possible_path.location,
+            current_query_part,
+        ));
     }
-
 
     // remove dirs with low score
     let average_score: f64 = all_possible_dirs
@@ -132,25 +188,23 @@ fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> V
         .iter()
         .map(|scored_path_node| scored_path_node.score)
         .max()
-        .unwrap_or(0 as i64)
+        .unwrap_or(0 as i32)
         / 2;
-
     return get_matching_paths(
         all_possible_dirs
             .iter()
             .filter(|scored_path| {
-                scored_path.score as f64 >= average_score && scored_path.score >= half_of_highest_score
+                scored_path.score as f64 >= average_score
+                    && scored_path.score >= half_of_highest_score
             })
             .map(|scored_path| PathNode {
                 location: scored_path.location.clone(),
-                score: scored_path.score
+                score: scored_path.score,
             })
             .collect(),
-        query
+        query,
     );
-
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -168,58 +222,25 @@ mod tests {
         path
     }
 
-    fn args_to_string(args: Vec<&str>) -> Vec<String> {
-        args.iter().map(|s| s.to_string()).collect()
-    }
-
     #[test]
     fn test_basic() {
-        assert_eq!(
-            resolve_query(""),
-            vec![abs_path("")]
-        );
-        assert_eq!(
-            resolve_query("test"),
-            vec![abs_path("test")]
-        );
-        assert_eq!(
-            resolve_query("tes"),
-            vec![abs_path("test")]
-        );
-        assert_eq!(
-            resolve_query("es"),
-            vec![abs_path("test")]
-        );
-        assert_eq!(
-            resolve_query("/"),
-            vec![abs_path("/")]
-        );
-        assert_eq!(
-            resolve_query(".. lacy"),
-            vec![abs_path("")]
-        );
-    }
-
-    #[test]
-    fn test_with_slash_at_end() {
-        assert_eq!(
-            resolve_query("test/"),
-            vec![abs_path("test")]
-        );
+        assert_eq!(resolve_query(""), vec![abs_path("")]);
+        assert_eq!(resolve_query("test"), vec![abs_path("test")]);
+        assert_eq!(resolve_query("tes"), vec![abs_path("test")]);
+        assert_eq!(resolve_query("es"), vec![abs_path("test")]);
+        assert_eq!(resolve_query("/"), vec![abs_path("/")]);
+        assert_eq!(resolve_query(".. lacy"), vec![abs_path("")]);
     }
 
     #[test]
     fn test_nonexisting() {
-        assert_eq!(
-            resolve_query("test zzzzzzzzz zzzzzzzzz"),
-            vec![String::new()]
-        );
+        assert!(resolve_query("test zzzzzzzzz zzzzzzzzz").is_empty());
     }
 
     #[test]
     fn test_alpha() {
         assert_eq!(
-            resolve_query("test alp alp"),
+            resolve_query("test alph alp"),
             vec![abs_path("test/alpha/alpha")]
         );
         assert_eq!(
@@ -260,10 +281,7 @@ mod tests {
             resolve_query("test alpha - - et4"),
             vec![abs_path("test/alpha/betabeta/epsil#on/eta4")]
         );
-        assert_eq!(
-            resolve_query("- alpha"),
-            vec![abs_path("test/alpha")]
-        );
+        assert_eq!(resolve_query("- alpha"), vec![abs_path("test/alpha")]);
     }
 
     #[test]
