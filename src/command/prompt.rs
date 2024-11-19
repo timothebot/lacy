@@ -317,6 +317,14 @@ mod tests {
     }
 
     #[test]
+    fn test_with_slash_at_end() {
+        assert_eq!(
+            get_matching_path(&args_to_string(vec!["test/"]), false),
+            abs_path("test")
+        );
+    }
+
+    #[test]
     fn test_nonexisting() {
         assert_eq!(
             get_matching_path(

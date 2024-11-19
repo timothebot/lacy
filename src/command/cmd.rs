@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::command::{complete::complete_path, init::get_shell_config, prompt::get_matching_path};
+use crate::command::{complete::complete_path, init::get_shell_config, prompt::get_matching_path, query::resolve_query};
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
@@ -15,8 +15,7 @@ impl LacyCli {
         let cli = LacyCli::parse();
         match cli.command {
             Commands::Prompt { path } => {
-                let args: Vec<String> = path.split(' ').map(|s| s.to_string()).collect();
-                println!("{}", get_matching_path(&args, true));
+                println!("{:?}", resolve_query(path.as_str()));
             }
             Commands::Init { shell } => get_shell_config(shell.as_str()),
             Commands::Complete { path } => {
