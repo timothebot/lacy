@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::{init::get_shell_config, query::resolve_query};
+use crate::{init::get_shell_config, query::resolve_query, ui};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -14,10 +14,28 @@ impl LacyCli {
         let cli = LacyCli::parse();
         match cli.command {
             Commands::Prompt { path } => {
-                println!(
-                    "{:?}",
-                    resolve_query(path.strip_suffix("/").unwrap_or(""))
-                );
+                let mut query = path.as_str();
+                if query.ends_with("/") {
+                    let mut chars = query.chars();
+                    chars.next_back();
+                    query = chars.as_str();
+                }
+                let results = resolve_query(query);
+                match results.len() {
+                    0 => {},
+                    1 => {
+                        println!("{}", results.first().unwrap().display().to_string());
+                    },
+                    _ => {
+                        println!("{}", ui::select(
+                            "Multiple possibilities found!",
+                            results
+                                .iter()
+                                .map(|path_buf| path_buf.display().to_string())
+                                .collect::<Vec<String>>()
+                        ));
+                    }
+                };
             }
             Commands::Init { shell } => get_shell_config(shell.as_str()),
             Commands::Complete { path } => {
