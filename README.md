@@ -1,8 +1,24 @@
-# Lacy 💤
+# Lacy
 
-Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
+<div align="center">
+<img src="docs/assets/lacy_banner.png" width="900" alt="lacy banner">
 
-![Example 0](docs/assets/example_0.webp)
+<div>
+    <img alt="Crates.io Version" src="https://img.shields.io/crates/v/lacy">
+    <img alt="Crates.io Total Downloads" src="https://img.shields.io/crates/d/lacy">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy">
+</div>
+
+Lacy is a magical cd alternative that makes navigating much more efficient!
+
+![Lacy example video](docs/assets/example_0.webp)
+
+<div>
+    <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
+</div>
+</div>
+
+## Getting started
 
 ### Navigation without full path
 
@@ -74,4 +90,4 @@ You can use `z` alongside lacy.
 
 ---
 
-Built by tiimo with <3
+Built with <3 by timothebot
