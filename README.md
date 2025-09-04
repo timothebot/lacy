@@ -4,9 +4,9 @@
 <img src="docs/assets/lacy_banner.png" width="700" alt="lacy banner">
 
 <div>
-    <img alt="Crates.io Version" src="https://img.shields.io/crates/v/lacy">
-    <img alt="Crates.io Total Downloads" src="https://img.shields.io/crates/d/lacy">
-    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy">
+    <a href="https://crates.io/crates/lacy"><img alt="Crates.io Version" src="https://img.shields.io/crates/v/lacy"></a>
+    <a href="https://crates.io/crates/lacy"><img alt="Crates.io Total Downloads" src="https://img.shields.io/crates/d/lacy"></a>
+    <a href="https://github.com/timothebot/lacy/"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy"></a>
 </div>
 <br>
 Lacy is a <i>magical cd alternative</i> that makes navigating much more efficient!
@@ -14,7 +14,7 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 <br>
 <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 <br>
-
+<br>
 <img src="docs/assets/example_0.webp" width="500" alt="lacy example video">
 <br>
 
