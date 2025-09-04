@@ -92,4 +92,4 @@ You can use `z` alongside lacy.
 
 ---
 
-Built with <3 by timothebot
+Built with <3 by [timothebot](https://github.com/timothebot)
