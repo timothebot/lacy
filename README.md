@@ -10,11 +10,9 @@
 </div>
 <br>
 Lacy is a <i>magical cd alternative</i> that makes navigating much more efficient!
-
 <br>
-<div>
-    <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
-</div>
+<br>
+<sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 <br>
 
 <img src="docs/assets/example_0.webp" width="500" alt="lacy example video">
