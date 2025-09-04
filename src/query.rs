@@ -9,7 +9,10 @@ pub struct PathNode {
 
 /// Get a list of matching directories for the given query
 pub fn resolve_query(query: &str) -> Vec<PathBuf> {
-    let prepared_query = query.replace(" ", "/").replace("//", "/");
+    let prepared_query = query
+        .replace("  ", " ")
+        .replace(" ", "/")
+        .replace("//", "/");
     if prepared_query == "" {
         return vec![get_current_directory()];
     }
@@ -40,10 +43,8 @@ pub fn resolve_query(query: &str) -> Vec<PathBuf> {
             }
             query_parts.pop();
             current_dir
-        },
-        _ => {
-            get_current_directory()
-        },
+        }
+        _ => get_current_directory(),
     };
 
     if query_parts.is_empty()
@@ -265,6 +266,42 @@ mod tests {
                 abs_path("test/alpha/beta/delta6"),
                 abs_path("test/alpha/beta/gamma3"),
             ]
+        );
+    }
+
+    #[test]
+    fn test_alpha_with_slashes() {
+        assert_eq!(
+            resolve_query("test alph/alp"),
+            vec![abs_path("test/alpha/alpha")]
+        );
+        assert_eq!(
+            resolve_query("tst/eps/bta/om9/0"),
+            vec![abs_path("test/epsilon/beta/omega9/alpha0")]
+        );
+        assert_eq!(
+            resolve_query("test/delta gamma"),
+            vec![abs_path("test/delta/gamma7")]
+        );
+        assert_eq!(
+            resolve_query("test delta gamma"),
+            vec![abs_path("test/delta/gamma7")]
+        );
+    }
+
+    #[test]
+    fn test_multiple_spaces_or_slashes() {
+        assert_eq!(
+            resolve_query("test  alph alp"),
+            vec![abs_path("test/alpha/alpha")]
+        );
+        assert_eq!(
+            resolve_query("tst eps bta  om9 0"),
+            vec![abs_path("test/epsilon/beta/omega9/alpha0")]
+        );
+        assert_eq!(
+            resolve_query("test /delta   gamma"),
+            vec![abs_path("test/delta/gamma7")]
         );
     }
 
