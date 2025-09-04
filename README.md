@@ -2,11 +2,6 @@
 
 Lacy is a z inspired cd alternative. It aims to make navigating easier for lazy people.
 
-> Lacy is WIP! Please report any issues you encounter. Don't expect it to work perfectly yet.
-> (I'm using it daily, it won't break/harm your system, but will sometimes throw an error... working on it)
-
-## Examples
-
 ![Example 0](docs/assets/example_0.webp)
 
 ### Navigation without full path
@@ -74,17 +69,9 @@ Feel free to contribute the init script for your shell. I'm gonna add them as so
 
 ## Why not `z`?
 
-`z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate.
+`z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate. `z` also needs to learn first, while lacy can be used on systems you (or lacy) never touched before.
 You can use `z` alongside lacy.
 
-## Todo
+---
 
--   [x] Add support for `..`
--   [x] Add support for `~`
--   [x] Add support for "real" paths (e.g. `/Users/timo/ desk proj lacy`)
--   [x] Add ability to skip a directory
--   [ ] Add more tests
--   [ ] Fix a lot of bugs
--   [ ] Add aliases
--   [ ] Add git cliff
--   [ ] Add support for more shells
+Built by tiimo with <3
