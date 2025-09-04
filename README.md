@@ -9,7 +9,7 @@
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy">
 </div>
 <br>
-Lacy is a *magical cd alternative* that makes navigating much more efficient!
+Lacy is a <i>magical cd alternative</i> that makes navigating much more efficient!
 
 <br>
 <div>
