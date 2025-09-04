@@ -8,14 +8,16 @@
     <img alt="Crates.io Total Downloads" src="https://img.shields.io/crates/d/lacy">
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy">
 </div>
-
+<br>
 Lacy is a magical cd alternative that makes navigating much more efficient!
-
-![Lacy example video](docs/assets/example_0.webp)
 
 <div>
     <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 </div>
+<br>
+
+<img src="docs/assets/example_0.webp" width="900" alt="lacy example video">
+
 </div>
 
 ## Getting started
