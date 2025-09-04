@@ -1,7 +1,7 @@
 # Lacy
 
 <div align="center">
-<img src="docs/assets/lacy_banner.png" width="900" alt="lacy banner">
+<img src="docs/assets/lacy_banner.png" width="550" alt="lacy banner">
 
 <div>
     <img alt="Crates.io Version" src="https://img.shields.io/crates/v/lacy">
@@ -16,7 +16,7 @@ Lacy is a magical cd alternative that makes navigating much more efficient!
 </div>
 <br>
 
-<img src="docs/assets/example_0.webp" width="900" alt="lacy example video">
+<img src="docs/assets/example_0.webp" width="500" alt="lacy example video">
 
 </div>
 
