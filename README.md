@@ -1,7 +1,7 @@
 # Lacy
 
 <div align="center">
-<img src="docs/assets/lacy_banner.png" width="550" alt="lacy banner">
+<img src="docs/assets/lacy_banner.png" width="700" alt="lacy banner">
 
 <div>
     <img alt="Crates.io Version" src="https://img.shields.io/crates/v/lacy">
@@ -9,14 +9,16 @@
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/timothebot/lacy">
 </div>
 <br>
-Lacy is a magical cd alternative that makes navigating much more efficient!
+Lacy is a *magical cd alternative* that makes navigating much more efficient!
 
+<br>
 <div>
     <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 </div>
 <br>
 
 <img src="docs/assets/example_0.webp" width="500" alt="lacy example video">
+<br>
 
 </div>
 
