@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    if: github.event_name == 'push'
+    if: github.event_name != 'release'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
