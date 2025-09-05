@@ -45,6 +45,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+  
       - name: Rename binaries for release
         run: |
           mkdir dist
@@ -52,8 +53,8 @@ jobs:
             target=$(basename $(dirname "$f"))
             cp "$f" "dist/lacy-${target}"
           done
-
+  
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/*
+          files: dist/*
