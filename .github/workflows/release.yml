@@ -5,12 +5,6 @@ on:
     branches: [main]
   release:
     types: [created]
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-
 
 jobs:
   build:
@@ -19,10 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-latest
           - target: x86_64-apple-darwin
             os: macos-latest
           - target: aarch64-apple-darwin
