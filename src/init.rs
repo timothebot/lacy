@@ -5,7 +5,9 @@ pub fn get_shell_config(shell: &str) {
                 r#"
 function y {{
     new_path=$(lacy prompt -- "$*")
-    if [ -d "$new_path" ]; then
+    if [ "$new_path" = "~" ]; then
+        cd ~
+    elif [ -d "$new_path" ]; then
         cd "$new_path"
     else
         echo "Error: No matching directory found for '$*'"
@@ -30,7 +32,9 @@ compdef _y y"#
                 r#"
 y() {{
     new_path=$(lacy prompt -- "$*")
-    if [ -d "$new_path" ]; then
+    if [ "$new_path" = "~" ]; then
+        cd ~
+    elif [ -d "$new_path" ]; then
         cd "$new_path" || return
     else
         echo "Error: No matching directory found for '$*'"
@@ -56,7 +60,9 @@ complete -F _y y"#
             println!(r#"
 function y
     set new_path (lacy prompt -- "$argv")
-    if test -d "$new_path"
+    if test "$new_path" = "~"
+        cd ~
+    else if test -d "$new_path"
         cd "$new_path"
     else
         echo "Error: No matching directory found for '$argv'"
