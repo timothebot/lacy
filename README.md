@@ -20,7 +20,7 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 
 </div>
 
-## Features 🚀
+## Features
 
 ### Navigation without full path
 
@@ -67,33 +67,50 @@ You can also add real paths while lazy navigating.
 y /Users/timo/ desk proj lacy/src
 ```
 
-## Installation 📦
+## Getting started
 
-### Cargo (Universal)
+### Installation
+
+#### Cargo (Universal)
 
 ```sh
 cargo install lacy
 ```
 
-### Homebrew (macOS)
+#### Homebrew (macOS)
 
 ```sh
 brew install timothebot/tap/lacy
 ```
 
-### Zsh
+### Shell Setup
 
-Add the following to your `.zshrc` file:
+#### Zsh
 
-```shell
+```bash
+# ~/.zshrc
 eval "$(lacy init zsh)"
 ```
 
-### Other shells
+#### Bash
 
-Feel free to contribute the init script for your shell. I'm gonna add them as soon as I can.
+```bash
+# ~/.bashrc
+eval "$(lacy init bash)"
+```
 
-## FAQ ❓
+#### Fish
+
+```bash
+# ~/.config/fish/config.fish
+lacy init fish | source
+```
+
+#### Other shells
+
+Feel free to contribute the init script for your preferred shell.
+
+## FAQ
 
 ### Why not `z`?
 
@@ -103,6 +120,10 @@ You can use `z` alongside lacy.
 ## Contributions
 
 Feel free to open a PR for any type of changes!
+
+## AI notice
+
+The code in this repository was written by hand. AI was used for the different shell configurations and helped with the Github actions.
 
 ---
 
