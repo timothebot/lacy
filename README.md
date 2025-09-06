@@ -15,12 +15,12 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 <br>
 <br>
-<img src="docs/assets/example_0.webp" width="500" alt="lacy example video">
+<img style="border-radius: 10px;" src="docs/assets/lacy_example_1.webp" width="500" alt="lacy example video">
 <br>
 
 </div>
 
-## Getting started
+## Features 🚀
 
 ### Navigation without full path
 
@@ -44,7 +44,8 @@ Forgot the directory name? No problem. Just skip it using `-`.
 ```sh
 y / user timo - lacy sr
 
-# as long as some parts are still unique, it will work... and it's very fast
+# as long as some parts are still unique, it will work
+# ...and it's very fast
 y / - - - lacy sr
 ```
 
@@ -66,11 +67,18 @@ You can also add real paths while lazy navigating.
 y /Users/timo/ desk proj lacy/src
 ```
 
-## Installation
+## Installation 📦
+
+### Cargo (Universal)
 
 ```sh
-# macOS or Linux
 cargo install lacy
+```
+
+### Homebrew (macOS)
+
+```sh
+brew install timothebot/tap/lacy
 ```
 
 ### Zsh
@@ -85,10 +93,16 @@ eval "$(lacy init zsh)"
 
 Feel free to contribute the init script for your shell. I'm gonna add them as soon as I can.
 
-## Why not `z`?
+## FAQ ❓
+
+### Why not `z`?
 
 `z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate. `z` also needs to learn first, while lacy can be used on systems you (or lacy) never touched before.
 You can use `z` alongside lacy.
+
+## Contributions
+
+Feel free to open a PR for any type of changes!
 
 ---
 
