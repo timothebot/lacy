@@ -20,6 +20,10 @@ impl LacyCli {
                     chars.next_back();
                     query = chars.as_str();
                 }
+                if query.trim().len() == 0 {
+                    println!("~");
+                    return;
+                }
                 let results = resolve_query(query);
                 match results.len() {
                     0 => {},
