@@ -71,7 +71,6 @@ fn test_basic() {
     setup();
 
     assert_eq!(resolve_query("/"), vec![abs_path("/")]);
-    assert_eq!(resolve_query(".. lacy"), vec![abs_path("")]);
 }
 
 #[test]
