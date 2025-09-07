@@ -5,8 +5,6 @@ on:
     branches: [main]
   release:
     types: [created]
-  pull_request:
-    types: [opened, edited]
 
 permissions:
   contents: write
