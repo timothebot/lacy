@@ -33,8 +33,16 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
+      # only needed for the aarch64 linux target
+      - name: Install cross linker
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+
       - name: Build release binary
         run: cargo build --release --target ${{ matrix.target }}
+        env:
+          # force cargo to use the cross linker
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
