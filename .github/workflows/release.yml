@@ -5,6 +5,8 @@ on:
     branches: [main]
   release:
     types: [created]
+  pull_request:
+    types: [opened, edited]
 
 permissions:
   contents: write
@@ -19,6 +21,10 @@ jobs:
             os: macos-latest
           - target: aarch64-apple-darwin
             os: macos-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
