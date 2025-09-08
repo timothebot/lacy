@@ -15,7 +15,22 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 <sup>If you are interested, please consider ⭐-ing this repo so I know that more people are interested!</sup>
 <br>
 <br>
-<img style="border-radius: 10px;" src="docs/assets/lacy_example_1.webp" width="500" alt="lacy example video">
+
+<div align="left">
+
+```sh
+# Instead of 'cd Desktop/projects/lacy/src'
+y desk prj lacy src
+
+# or 
+y - - layc src
+
+# or 
+y Desktop/prj layc sc
+```
+
+</div>
+
 <br>
 
 </div>
