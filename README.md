@@ -127,10 +127,35 @@ Feel free to contribute the init script for your preferred shell.
 
 ## FAQ
 
-### Why not `z`?
+### Why does it need a shell script?
+
+It is needed because you can't change the directory without using `cd`. So the shell script just executes `cd` if needed.
+
+### Isn't it faster to use completions?
+
+Yes. And no. Completions break, if you have a lot of similar named directories.
+
+```
+project_server/
+project_web/
+project_types/
+```
+
+For example, in this structure, you can just type `y web` instead.
+
+### Why not `z`/`zoxide`?
 
 `z` is a great tool, but if you are working with a lot of projects with similar paths, it can be a pain to navigate. `z` also needs to learn first, while lacy can be used on systems you (or lacy) never touched before.
 You can use `z` alongside lacy.
+
+### How can I use both Lacy and `z`/`zoxide`?
+
+If you have `cd` aliased to `z`, then it should work as long as the Lacy shell eval is below the `z` eval.
+If not, run `lacy init <shell>` and manually add the result to your shell config. Then, replace the `cd`'s with `z`.
+
+### I have other problems and need help!
+
+Feel free to open an issue, contact me on discord (@tiimo, DM me, don't send friend requests).
 
 ## Contributions
 
