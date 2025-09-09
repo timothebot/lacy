@@ -31,13 +31,15 @@ impl LacyCli {
                         println!("{}", results.first().unwrap().display().to_string());
                     },
                     _ => {
-                        println!("{}", ui::select(
+                        if let Some(selected) = ui::select(
                             "Multiple possibilities found!",
                             results
                                 .iter()
                                 .map(|path_buf| path_buf.display().to_string())
-                                .collect::<Vec<String>>()
-                        ));
+                                .collect::<Vec<String>>(),
+                        ) {
+                            println!("{}", selected);
+                        }
                     }
                 };
             }
