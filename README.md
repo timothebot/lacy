@@ -168,3 +168,7 @@ The code in this repository was written by hand. AI was used for the different s
 ---
 
 Built with <3 by [timothebot](https://github.com/timothebot)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=timothebot/lacy&type=Date)](https://www.star-history.com/#timothebot/lacy&Date)
