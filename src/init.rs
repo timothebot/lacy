@@ -1,86 +1,27 @@
-pub fn get_shell_config(shell: &str) {
+use crate::shell::{bash_config, fish_config, zsh_config};
+
+pub fn shell_config(
+    shell: &str,
+    cd_cmd: Option<String>,
+    custom_fuzzy: Option<String>,
+    lacy_cmd: Option<String>,
+) {
+    let cd_cmd = cd_cmd.unwrap_or(String::from("cd"));
+    let lacy_cmd = lacy_cmd.unwrap_or(String::from("y"));
+    let return_all = if custom_fuzzy.is_some() {
+        String::from("--return-all ")
+    } else {
+        String::new()
+    };
     match shell {
         "zsh" => {
-            println!(
-                r#"
-function y {{
-    new_path=$(lacy prompt -- "$*")
-    if [ "$new_path" = "~" ]; then
-        cd ~
-    elif [ -d "$new_path" ]; then
-        cd "$new_path"
-    else
-        echo "Error: No matching directory found for '$*'"
-    fi
-}}
-function _y {{
-    local dirs
-    args="${{words[@]:1}}"
-    dirs=$(lacy complete -- "$args")
-    dirs=(${{(s: :)dirs}})
-    compadd $dirs
-}}
-_lacy() {{
-    compadd prompt complete init help
-}}
-compdef _lacy lacy
-compdef _y y"#
-            );
+            println!("{}", zsh_config(cd_cmd, return_all, custom_fuzzy, lacy_cmd))
         }
         "bash" => {
-            println!(
-                r#"
-y() {{
-    new_path=$(lacy prompt -- "$*")
-    if [ "$new_path" = "~" ]; then
-        cd ~
-    elif [ -d "$new_path" ]; then
-        cd "$new_path" || return
-    else
-        echo "Error: No matching directory found for '$*'"
-    fi
-}}
-_y() {{
-    local cur dirs basenames
-    cur="${{COMP_WORDS[*]:1}}"
-    dirs=$(lacy complete -- "$cur")
-    basenames=$(printf '%s\n' $dirs | xargs -n1 basename)
-    COMPREPLY=($(compgen -W "$basenames" -- "$cur"))
-}}
-_lacy() {{
-    local cur
-    cur="${{COMP_WORDS[COMP_CWORD]}}"
-    COMPREPLY=($(compgen -W "prompt complete init help" -- "$cur"))
-}}
-complete -F _lacy -o default -o nospace lacy
-complete -F _y y"#
-            )
+            println!("{}", bash_config(cd_cmd, return_all, custom_fuzzy, lacy_cmd))
         }
         "fish" => {
-            println!(r#"
-function y
-    set new_path (lacy prompt -- "$argv")
-    if test "$new_path" = "~"
-        cd ~
-    else if test -d "$new_path"
-        cd "$new_path"
-    else
-        echo "Error: No matching directory found for '$argv'"
-    end
-end
-function __y_autocomplete
-    set args $argv
-    if test "$args" = ""
-        ls -D --icons=never -1
-    else
-        set dirs (string split ' ' (lacy complete -- "$args"))
-        for dir in $dirs
-            basename $dir
-        end
-    end
-end
-complete --no-files lacy -x -a "prompt complete init help"
-complete --no-files y -r -a "(__y_autocomplete)""#)
+            println!("{}", fish_config(cd_cmd, return_all, custom_fuzzy, lacy_cmd))
         }
         _ => {
             eprintln!("Error: Unsupported shell '{}'", shell);
