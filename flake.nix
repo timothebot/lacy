@@ -20,18 +20,18 @@
             nix-update-script,
             ...
           }:
+          let
+            manifest = (lib.importTOML ./Cargo.toml).package;
+          in
           rustPlatform.buildRustPackage (finalAttrs: {
-            pname = "lacy";
-            version = "0.3.0";
+            pname = manifest.name;
+            version = manifest.version;
 
             src = ./.;
 
             passthru.updateScript = nix-update-script { };
 
-            # Remove in 0.3.1 once tests do not rely on folders
-            doCheck = false;
-
-            cargoHash = "sha256-N5avoN3QCCYMF29Cvbwha+iBAXPncOttWxGpVZ70EqI=";
+            cargoHash = "sha256-FLDAiPjqj86Uj0c095gcYhUnITlq4qVkDWN2sdEb/xQ=";
 
             meta = {
               description = "Fast magical cd alternative for lacy terminal navigators";
@@ -77,16 +77,17 @@
           };
 
         devShell = {
-          packages =
-            pkgs: with pkgs; [
-              python314
-            ];
+          packages = pkgs: with pkgs; [ python314 ];
         };
 
         app = { lacy, ... }: "${lacy}/bin/lacy";
 
-        systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "x86_64-darwin"
+          "aarch64-darwin"
+        ];
       }
     );
 }
- 
