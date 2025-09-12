@@ -47,10 +47,18 @@ impl LacyCli {
             }
             Commands::Init {
                 shell,
+                cd_cmd,
+                cmd,
                 custom_fuzzy,
-                cd_command,
-                lacy_command,
-            } => shell_config(shell.as_str(), cd_command, custom_fuzzy, lacy_command),
+            } => {
+                println!(
+                    "{}",
+                    match shell_config(shell.as_str(), cd_cmd, cmd, custom_fuzzy) {
+                        Ok(config) => config,
+                        Err(err) => format!("An error occurred: {}", err),
+                    }
+                );
+            }
             Commands::Complete { path } => {
                 println!(
                     "{}",
@@ -80,18 +88,18 @@ enum Commands {
         /// Currently supported shells: bash, fish, zsh
         shell: String,
 
-        /// Allows you to specifiy another command than cd, e.g. z
-        #[arg(long)]
-        cd_command: Option<String>,
+        /// Allows you to specify another command than cd, e.g. z
+        #[arg(long, default_value = "cd")]
+        cd_cmd: String,
+
+        /// Define what alias the lacy command has
+        #[arg(long, default_value = "y")]
+        cmd: String,
 
         /// What fuzzy tool should be used for cases where lacy finds multiple
         /// matching folders. If not specified, lacy will use a custom UI.
         #[arg(long)]
         custom_fuzzy: Option<String>,
-
-        /// Define what alias the lacy command has, default 'y'
-        #[arg(long)]
-        lacy_command: Option<String>,
     },
     Complete {
         path: String,
