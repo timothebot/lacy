@@ -98,16 +98,9 @@ cargo install lacy
 brew install timothebot/tap/lacy
 ```
 
-#### NixOS (with Flakes and Home Manager)
+#### NixOS (with Flakes and Home Manager) ❄️
 
-Run `lacy` directly:
-```sh
-nix run github:timothebot/lacy
-```
-
-Or, add `lacy` to your system configuration:
-
-Add `lacy` to your `flake.nix` inputs:
+There are a couple of ways to get `lacy` up and running on your Nix system. Both methods require adding `lacy` to your `flake.nix` inputs.
 
 ```nix
 # flake.nix
@@ -123,11 +116,16 @@ Add `lacy` to your `flake.nix` inputs:
 }
 ```
 
-Then, in your `home-manager` configuration, import the `lacy` module and enable it:
+##### 1. Home Manager Module (Recommended)
+
+This is the easiest way to manage `lacy` if you're using Home Manager. The module handles most of the setup for you. You **must** explicitly add the `lacy` flake as an **overlay** to your configuration to ensure the `lacy` package is available.
 
 ```nix
 # home.nix
-{
+{ pkgs, inputs, ... }: {
+  # Explicitly add the overlay to make lacy visible in your pkgs set
+  nixpkgs.overlays = [ inputs.lacy.overlays.default ];
+
   imports = [
     inputs.lacy.homeManagerModules.default
   ];
@@ -136,39 +134,39 @@ Then, in your `home-manager` configuration, import the `lacy` module and enable 
 }
 ```
 
-Rebuild your system for the changes to take effect.
+##### 2. Nix Overlay (NixOS / Home Manager)
 
-### Using as an Overlay
+If you prefer to manage packages directly without using the Home Manager module, this is the way to go. You apply the overlay and then add the `lacy` package to your system or user packages.
 
-Alternatively, you can use the `lacy` flake as an overlay. This is useful if you prefer to manage your packages directly without using the provided Home Manager module.
+**For NixOS:**
 
-#### For NixOS
+```nix
+# In your NixOS configuration (e.g., /etc/nixos/configuration.nix)
+{ pkgs, inputs, ... }: {
+  nixpkgs.overlays = [ inputs.lacy.overlays.default ];
 
-1.  Add `lacy` to your `flake.nix` inputs.
-2.  Apply the overlay to your NixOS configuration and add the package to `environment.systemPackages`.
+  environment.systemPackages = [ pkgs.lacy ];
+}
+```
 
-    ```nix
-    # In your NixOS configuration (e.g., /etc/nixos/configuration.nix)
-    { pkgs, inputs, ... }: {
-      nixpkgs.overlays = [ inputs.lacy.overlays.default ];
+**For Home Manager:**
 
-      environment.systemPackages = [ pkgs.lacy ];
-    }
-    ```
+```nix
+# In your home-manager configuration (e.g., ~/.config/nixpkgs/home.nix)
+{ pkgs, inputs, ... }: {
+  nixpkgs.overlays = [ inputs.lacy.overlays.default ];
 
-#### For Home Manager
+  home.packages = [ pkgs.lacy ];
+}
+```
 
-1.  Add `lacy` to your `flake.nix` inputs.
-2.  Apply the overlay to your Home Manager configuration and add the package to `home.packages`.
+##### 3. Run `lacy` directly
 
-    ```nix
-    # In your home-manager configuration (e.g., ~/.config/nixpkgs/home.nix)
-    { pkgs, inputs, ... }: {
-      nixpkgs.overlays = [ inputs.lacy.overlays.default ];
+Just want to try it out? You can run `lacy` from the command line without adding it to your system configuration.
 
-      home.packages = [ pkgs.lacy ];
-    }
-    ```
+```sh
+nix run github:timothebot/lacy
+```
 
 ### Shell Setup
 
