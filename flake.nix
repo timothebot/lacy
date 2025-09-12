@@ -85,13 +85,7 @@
 
         app = { lacy, ... }: "${lacy}/bin/lacy";
 
-        systems = [
-          "x86_64-linux"
-          "aarch64-linux"
-          "i686-linux"
-          "armv7l-linux"
-        ];
-
+        systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       }
     );
 }
