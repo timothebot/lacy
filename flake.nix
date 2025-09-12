@@ -77,7 +77,7 @@
           };
 
         devShell = {
-          packages = pkgs: with pkgs; [ python314 ];
+          packages = pkgs: with pkgs; [ cargo rustc ];
         };
 
         app = { lacy, ... }: "${lacy}/bin/lacy";
