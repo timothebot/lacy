@@ -1,89 +1,50 @@
-pub fn get_shell_config(shell: &str) {
-    match shell {
-        "zsh" => {
-            println!(
-                r#"
-function y {{
-    new_path=$(lacy prompt -- "$*")
-    if [ "$new_path" = "~" ]; then
-        cd ~
-    elif [ -d "$new_path" ]; then
-        cd "$new_path"
-    else
-        echo "Error: No matching directory found for '$*'"
-    fi
-}}
-function _y {{
-    local dirs
-    args="${{words[@]:1}}"
-    dirs=$(lacy complete -- "$args")
-    dirs=(${{(s: :)dirs}})
-    compadd $dirs
-}}
-_lacy() {{
-    compadd prompt complete init help
-}}
-compdef _lacy lacy
-compdef _y y"#
-            );
-        }
-        "bash" => {
-            println!(
-                r#"
-y() {{
-    new_path=$(lacy prompt -- "$*")
-    if [ "$new_path" = "~" ]; then
-        cd ~
-    elif [ -d "$new_path" ]; then
-        cd "$new_path" || return
-    else
-        echo "Error: No matching directory found for '$*'"
-    fi
-}}
-_y() {{
-    local cur dirs basenames
-    cur="${{COMP_WORDS[*]:1}}"
-    dirs=$(lacy complete -- "$cur")
-    basenames=$(printf '%s\n' $dirs | xargs -n1 basename)
-    COMPREPLY=($(compgen -W "$basenames" -- "$cur"))
-}}
-_lacy() {{
-    local cur
-    cur="${{COMP_WORDS[COMP_CWORD]}}"
-    COMPREPLY=($(compgen -W "prompt complete init help" -- "$cur"))
-}}
-complete -F _lacy -o default -o nospace lacy
-complete -F _y y"#
-            )
-        }
-        "fish" => {
-            println!(r#"
-function y
-    set new_path (lacy prompt -- "$argv")
-    if test "$new_path" = "~"
-        cd ~
-    else if test -d "$new_path"
-        cd "$new_path"
-    else
-        echo "Error: No matching directory found for '$argv'"
-    end
-end
-function __y_autocomplete
-    set args $argv
-    if test "$args" = ""
-        ls -D --icons=never -1
-    else
-        set dirs (string split ' ' (lacy complete -- "$args"))
-        for dir in $dirs
-            basename $dir
-        end
-    end
-end
-complete --no-files lacy -x -a "prompt complete init help"
-complete --no-files y -r -a "(__y_autocomplete)""#)
-        }
-        _ => {
-            eprintln!("Error: Unsupported shell '{}'", shell);
-        }
+use upon::{value, Engine, Error};
+
+
+
+pub fn shell_config(
+    shell: &str,
+    cd_cmd: String,
+    cmd: String,
+    custom_fuzzy: Option<String>,
+) -> Result<String, Error> {
+    let mut engine = Engine::new();
+
+    let _ = engine.add_template("bash", include_str!("../templates/bash.sh"));
+    let _ = engine.add_template("zsh", include_str!("../templates/zsh.sh"));
+    let _ = engine.add_template("fish", include_str!("../templates/fish.fish"));
+
+    engine
+        .template(shell)
+        .render(value! {
+            cd: cd_cmd,
+            lacy_cmd: cmd,
+            return_all: if custom_fuzzy.is_some() {
+                String::from("--return-all ")
+            } else {
+                String::new()
+            },
+            custom_fuzzy: {
+                enabled: custom_fuzzy.is_some(),
+                cmd: custom_fuzzy.unwrap_or(String::new())
+            }
+        })
+        .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_templates_compile() {
+        let mut engine = upon::Engine::new();
+        engine
+            .add_template("bash", include_str!("../templates/bash.sh"))
+            .unwrap();
+        engine
+            .add_template("zsh", include_str!("../templates/zsh.sh"))
+            .unwrap();
+        engine
+            .add_template("fish", include_str!("../templates/fish.fish"))
+            .unwrap();
     }
 }
