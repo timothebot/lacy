@@ -170,6 +170,8 @@ nix run github:timothebot/lacy
 
 ### Shell Setup
 
+For more shell options, see `lacy init --help`.
+
 #### Zsh
 
 ```bash
