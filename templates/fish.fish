@@ -3,7 +3,7 @@ function {{ lacy_cmd }}
     set new_path (lacy prompt {{ return_all }}-- "$argv")
     if test "$new_path" = "~"
         {{ cd }} ~
-    {% if custom_fuzzy.enabled %}else if string match -q "*\n*" -- $new_path
+    {% if custom_fuzzy.enabled %}else if test (count $new_path) -gt 1
         set selected (printf "%s\n" $new_path | {{ custom_fuzzy.cmd }})
         if test -n "$selected"
             {{ cd }} "$selected"
