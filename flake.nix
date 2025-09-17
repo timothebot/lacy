@@ -43,7 +43,7 @@
             };
           });
 
-        homeManagerModule =
+        homeModule =
           {
             config,
             lib,
