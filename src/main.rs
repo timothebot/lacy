@@ -1,10 +1,13 @@
+use clap::Parser;
 use cmd::LacyCli;
 
+use crate::cmd::Run;
+
 mod cmd;
-mod init;
+mod fuzzy;
 mod query;
 mod ui;
 
 fn main() {
-    LacyCli::run();
+    LacyCli::parse().run();
 }

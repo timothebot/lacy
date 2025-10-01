@@ -1,3 +1,4 @@
+use crate::fuzzy::fuzzy_match_score;
 use std::env;
 use std::{fs, path::PathBuf};
 
@@ -76,33 +77,6 @@ fn get_current_directory() -> PathBuf {
     env::current_dir().unwrap_or(PathBuf::from("/"))
 }
 
-fn fuzzy_match(input: &str, pattern: &str) -> i32 {
-    let mut score = 0;
-    if input
-        .to_lowercase()
-        .contains(pattern.to_lowercase().as_str())
-    {
-        score += 10;
-    }
-    let mut dir_name_mut = input.to_string();
-    for c in pattern.chars() {
-        if dir_name_mut.to_lowercase().contains(c.to_ascii_lowercase()) {
-            score += 1;
-            // strip the char to avoid multiple matches
-            dir_name_mut = dir_name_mut.replacen(c, "", 1);
-        } else {
-            score -= 5;
-        }
-    }
-    if input.to_lowercase() == pattern.to_lowercase() {
-        score += 50;
-    }
-    if score < 0 {
-        score = 0;
-    }
-    score
-}
-
 /// Returns an unscored vec of all directories for the given path
 fn get_all_directories_in(path: &PathBuf) -> Vec<PathBuf> {
     let dirs_res = fs::read_dir(path);
@@ -148,7 +122,7 @@ fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
         let Some(dir_name) = directory.file_name() else {
             continue;
         };
-        let score = fuzzy_match(dir_name.to_str().unwrap_or(""), query);
+        let score = fuzzy_match_score(dir_name.to_str().unwrap_or(""), query);
 
         if score > 0 {
             scored_dirs.push(PathNode {
