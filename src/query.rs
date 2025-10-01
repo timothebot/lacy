@@ -13,7 +13,7 @@ pub fn resolve_query(query: &str) -> Vec<PathBuf> {
         .replace("  ", " ")
         .replace(" ", "/")
         .replace("//", "/");
-    if prepared_query == "" {
+    if prepared_query.is_empty() {
         return vec![get_current_directory()];
     }
     let mut query_parts: Vec<&str> = prepared_query.split("/").collect();
@@ -27,12 +27,12 @@ pub fn resolve_query(query: &str) -> Vec<PathBuf> {
         return vec![get_current_directory()];
     };
 
-    let start_location = match first_query_part {
-        &"~" => {
+    let start_location = match *first_query_part {
+        "~" => {
             query_parts.pop();
             PathBuf::from(env::var("HOME").unwrap_or(String::from("/")))
         }
-        &"" => {
+        "" => {
             query_parts.pop();
             PathBuf::from("/")
         }
@@ -105,7 +105,7 @@ fn fuzzy_match(input: &str, pattern: &str) -> i32 {
 
 /// Returns an unscored vec of all directories for the given path
 fn get_all_directories_in(path: &PathBuf) -> Vec<PathBuf> {
-    let dirs_res = fs::read_dir(&path);
+    let dirs_res = fs::read_dir(path);
     let Ok(dirs) = dirs_res else {
         return vec![];
     };
@@ -157,8 +157,7 @@ fn get_scored_directories(path: &PathBuf, query: &str) -> Vec<PathNode> {
             });
         }
     }
-
-    return scored_dirs;
+    scored_dirs
 }
 
 /// Takes an array of paths and searches them recursivly until all parts of the query
@@ -193,9 +192,9 @@ fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> V
         .iter()
         .map(|scored_path_node| scored_path_node.score)
         .max()
-        .unwrap_or(0 as i32)
+        .unwrap_or(0_i32)
         / 2;
-    return get_matching_paths(
+    get_matching_paths(
         all_possible_dirs
             .iter()
             .filter(|scored_path| {
@@ -208,5 +207,5 @@ fn get_matching_paths(possible_paths: Vec<PathNode>, query: &mut Vec<&str>) -> V
             })
             .collect(),
         query,
-    );
+    )
 }
