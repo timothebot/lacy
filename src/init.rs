@@ -24,7 +24,7 @@ pub fn shell_config(
             },
             custom_fuzzy: {
                 enabled: custom_fuzzy.is_some(),
-                cmd: custom_fuzzy.unwrap_or(String::new())
+                cmd: custom_fuzzy.unwrap_or_default()
             }
         })
         .to_string()

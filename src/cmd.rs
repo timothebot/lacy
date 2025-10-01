@@ -20,7 +20,7 @@ impl LacyCli {
                     chars.next_back();
                     query = chars.as_str();
                 }
-                if query.trim().len() == 0 {
+                if query.trim().is_empty() {
                     println!("~");
                     return;
                 }
@@ -28,7 +28,7 @@ impl LacyCli {
                 match results.len() {
                     0 => {}
                     1 => {
-                        println!("{}", results.first().unwrap().display().to_string());
+                        println!("{}", results.first().unwrap().display());
                     }
                     _ => {
                         let paths = results
