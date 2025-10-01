@@ -1,8 +1,8 @@
 use cmd::LacyCli;
 
-mod query;
-mod init;
 mod cmd;
+mod init;
+mod query;
 mod ui;
 
 fn main() {

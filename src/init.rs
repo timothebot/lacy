@@ -1,7 +1,5 @@
 use upon::{value, Engine, Error};
 
-
-
 pub fn shell_config(
     shell: &str,
     cd_cmd: String,
