@@ -104,6 +104,10 @@ fn test_alpha() {
         env.resolve_query("test delta gamma"),
         vec![env.abs_path("test/delta/gamma7")]
     );
+    assert_eq!(
+        env.resolve_query("test delta gamma "),
+        vec![env.abs_path("test/delta/gamma7")]
+    );
 }
 
 #[test]

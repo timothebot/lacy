@@ -13,11 +13,10 @@
     fi
 }
 _{{ lacy_cmd }}() {
-    local cur dirs basenames
+    local cur dirs
     cur="${COMP_WORDS[*]:1}"
-    dirs=$(lacy complete -- "$cur")
-    basenames=$(printf '%s\n' $dirs | xargs -n1 basename)
-    COMPREPLY=($(compgen -W "$basenames" -- "$cur"))
+    dirs=$(lacy complete --basename -- "$cur")
+    COMPREPLY=($(compgen -W "$dirs" -- "$cur"))
 }
 _lacy() {
     local cur

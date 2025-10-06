@@ -1,23 +1,6 @@
-use crate::directory::Directory;
+use crate::directory::{sub_directories, Directory};
 use crate::query_part::QueryPart;
 use std::path::{Path, PathBuf};
-
-// _ => space
-// query: /user_tiimo_
-// prompt => cd user/tiimo
-// complete => all dirs in user/tiimo/
-
-// query: /user_tiimo_-
-// prompt => show all dirs in tiimo/**/*
-// complete => no completion
-
-// query: /user_tiimo_-_
-// prompt => show all dirs in tiimo/**/*
-// complete => complete all dirs in tiimo/**/*
-
-// query: /user_tiimo_abc
-// prompt => return matching
-// complete => complete all dirs at tiimo/* that have a score > 0 (except if its only one result)
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Query {
@@ -27,7 +10,7 @@ pub struct Query {
 
 impl From<String> for Query {
     fn from(query: String) -> Self {
-        let mut enhanced_query = query.clone();
+        let mut enhanced_query = query.clone().trim().replace("  ", " ");
         if enhanced_query.starts_with("/") {
             enhanced_query = format!("##ROOT##{}", enhanced_query.strip_prefix("/").unwrap());
         }
@@ -35,7 +18,6 @@ impl From<String> for Query {
             enhanced_query = enhanced_query.strip_suffix("/").unwrap().to_string();
         }
         enhanced_query = enhanced_query
-            .replace("  ", " ")
             .replace(" / ", " ##ROOT## ")
             .replace(" ", "/")
             .replace("//", "/");
@@ -74,11 +56,25 @@ impl Query {
             .collect()
     }
 
-    #[allow(dead_code)]
-    pub fn completions(&self) -> Vec<String> {
-        // Different completion algorithm for query:
-        // 1. If it ends with space, complete all dirs in current path
-        // 2.
+    pub fn completions(&self, cwd: &Path) -> Vec<PathBuf> {
+        let query = self.query.clone();
+        if query.trim().is_empty() {
+            return sub_directories(cwd, 0).iter().map(|dir| dir.location().clone()).collect();
+        }
+        if query.ends_with(" ") {
+            return self
+                .results(cwd)
+                .iter()
+                .flat_map(|dir| sub_directories(dir, 0))
+                .map(|dir| dir.location().clone())
+                .collect();
+        }
+        match &self.parts.last().unwrap_or(&QueryPart::Root) {
+            QueryPart::Text(_) => {
+                return self.results(cwd);
+            }
+            _ => {}
+        }
         vec![]
     }
 

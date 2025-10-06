@@ -1,17 +1,26 @@
 use crate::{
     cmd::{Complete, Run},
-    // query::resolve_query,
+    directory::get_current_directory,
+    query::Query,
 };
 
 impl Run for Complete {
     fn run(&self) {
-        // println!(
-        //     "{}",
-        //     resolve_query(&self.path.as_str())
-        //         .iter()
-        //         .map(|path_buf| path_buf.display().to_string())
-        //         .collect::<Vec<String>>()
-        //         .join(" ")
-        // );
+        let query = Query::from(self.query.clone());
+        println!(
+            "{}",
+            query
+                .completions(get_current_directory().as_path())
+                .iter()
+                .filter_map(|path_buf| {
+                    if self.basename {
+                        Some(path_buf.file_name()?.display().to_string())
+                    } else {
+                        Some(path_buf.display().to_string())
+                    }
+                })
+                .collect::<Vec<String>>()
+                .join(" ")
+        );
     }
 }
