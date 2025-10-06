@@ -1,0 +1,5 @@
+[book]
+authors = ["timothebot"]
+language = "en"
+src = "src"
+title = "Crane Documentation 🏗️"
