@@ -12,4 +12,4 @@ as simple as `cd` - if you know `cd`, you know lacy!
 
 But lacy also adds new features to make navigating in the terminal easier and faster!
 
-Interested yet? Check out all of lacy's [features](./features.md)!
+Interested yet? Check out all of lacy's [features](./features.md) or just [try it out](./setup.md)!

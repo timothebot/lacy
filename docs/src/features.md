@@ -2,7 +2,7 @@
 
 Lacy has two type of features: [Improved CD features](#improved-cd-features) and [new lacy features](#new-lacy-features).
 
-To use lacy, you use the `y` command. (You can easily change the default key, see [FAQ](./FAQ.md))
+To use lacy, you use the `y` command. (You can easily change the default key, see [FAQ](./faq.md))
 
 ## Improved CD Features
 
@@ -10,7 +10,7 @@ To use lacy, you use the `y` command. (You can easily change the default key, se
 
 Lacy is `cd` compatible, meaning everything you can do with `cd`, you can do it the exact same way in lacy:
 
-```shell
+```bash
 cd Desktop/foo/bar
 y Desktop/foo/bar
 
@@ -23,7 +23,7 @@ y ~
 
 But where `cd` is very strict about what you type, lacy isn't:
 
-```shell
+```bash
 cd Desktop/foo/bar
 y dskt/fooo/bar
 
@@ -33,7 +33,7 @@ y / usrs/timoo
 
 You can even write spaces instead of slashes if you want:
 
-```shell
+```bash
 cd Desktop/foo/bar
 y dskt fooo bar
 
@@ -48,14 +48,14 @@ so you always find what you want!
 
 Navigating back using `..` is also a feature that is improved.
 
-```shell
+```bash
 cd ../..
 y ../..
 ```
 
 Instead of writing `../..` for each level, you can just type `...` (Some shells already have this functionality built in).
 
-```shell
+```bash
 cd ../../..
 y ....
 ```
@@ -64,7 +64,7 @@ y ....
 
 > This feature is currently WIP!
 
-```shell
+```bash
 cd -1
 y -1
 ```
@@ -75,14 +75,14 @@ y -1
 
 If you ever know your target directory, but forgot whats between it, you can just skip it using `-`.
 
-```shell
+```bash
 cd Desktop/foo/bar
 y - foo bar
 ```
 
 You can do that as many times as you want.
 
-```shell
+```bash
 cd Desktop/foo/bar
 y - - - foo bar
 ```
@@ -102,5 +102,5 @@ In that case, lacy opens a multiselect window where you can select your target
   /Users/tiimo/Desktop/projects/lacy/src
 ```
 
-If you want, you can [easily swap out the default select](./FAQ.md) with your own solution,
+If you want, you can [easily swap out the default select](./setup.md#shell-options) with your own solution,
 like for example `fzf`.
