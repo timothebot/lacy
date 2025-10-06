@@ -15,7 +15,7 @@ function {{ lacy_cmd }} {
 function _{{ lacy_cmd }} {
     local dirs
     args="${words[@]:1}"
-    dirs=$(lacy complete -- "$args")
+    dirs=$(lacy complete --basename -- "$args")
     dirs=(${(s: :)dirs})
     compadd $dirs
 }
