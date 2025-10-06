@@ -1,9 +1,9 @@
-mod cmd;
+mod commands;
 mod complete;
 mod init;
 mod prompt;
 
-pub use crate::cmd::cmd::*;
+pub use crate::cmd::commands::*;
 
 pub trait Run {
     fn run(&self);

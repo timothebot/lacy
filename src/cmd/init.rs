@@ -7,7 +7,7 @@ impl Run for Init {
         println!(
             "{}",
             match shell_config(
-                &self.shell.as_str(),
+                self.shell.as_str(),
                 &self.cd_cmd,
                 &self.cmd,
                 &self.custom_fuzzy

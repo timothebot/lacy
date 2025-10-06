@@ -16,7 +16,7 @@ pub enum LacyCommand {
 
 #[derive(Debug, Parser)]
 pub struct Prompt {
-    pub path: String,
+    pub query: String,
 
     /// Returns all result separated by \n instead of showing selector ui
     ///
@@ -46,5 +46,5 @@ pub struct Init {
 
 #[derive(Debug, Parser)]
 pub struct Complete {
-    pub path: String,
+    pub query: String,
 }

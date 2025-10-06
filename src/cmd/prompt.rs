@@ -1,26 +1,39 @@
+use std::path::PathBuf;
+
 use crate::{
     cmd::{Prompt, Run},
-    query::resolve_query,
+    directory::get_current_directory,
+    query::Query,
     ui,
 };
 
 impl Run for Prompt {
     fn run(&self) {
-        let mut query = self.path.as_str();
-        if query.ends_with("/") {
-            let mut chars = query.chars();
-            chars.next_back();
-            query = chars.as_str();
-        }
-        if query.trim().len() == 0 {
-            println!("~");
-            return;
-        }
-        let results = resolve_query(query);
+        let query = Query::from(self.query.clone());
+
+        /*
+        _ if first_query_part.starts_with("-")
+                && !first_query_part
+                    .strip_prefix("-")
+                    .unwrap_or_default()
+                    .contains("-") =>
+            {
+                if let Ok(number) = first_query_part
+                    .strip_prefix("-")
+                    .unwrap_or_default()
+                    .parse::<i32>()
+                {
+
+                }
+                get_current_directory()
+            }
+             */
+
+        let results: Vec<PathBuf> = query.results(get_current_directory().as_path());
         match results.len() {
             0 => {}
             1 => {
-                println!("{}", results.first().unwrap().display().to_string());
+                println!("{}", results.first().unwrap().display());
             }
             _ => {
                 let paths = results

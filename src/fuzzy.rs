@@ -31,7 +31,7 @@ pub fn fuzzy_match_score(input: &str, pattern: &str) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::fuzzy_match_score as score;
-    
+
     #[test]
     #[should_panic]
     fn not_yet_implemented() {
@@ -44,7 +44,7 @@ mod tests {
 
         assert!(score("test_abc_a", "taa") > score("test_abc_a", "te"));
         assert!(score("test_abc_a", "taa") > score("test_abc_a", "tea"));
-        
+
         assert!(score("testAbc", "ta") > score("testAbc", "te"));
     }
 
@@ -56,13 +56,13 @@ mod tests {
         assert!(score("test", "test") > score("test", "tes"));
         assert!(score("ttest", "tt") > score("ttest", "t"));
     }
-    
+
     #[test]
     fn test_advanced() {
         assert!(score("helloworld", "world") > score("helloworld", "elwo"));
         assert!(score("helloworld", "hello") > score("helloworld", "hellohello"));
     }
-    
+
     #[test]
     fn test_negative_queries() {
         assert!(score("helloworld", "ellovvvv") == 0);
