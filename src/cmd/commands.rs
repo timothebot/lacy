@@ -20,7 +20,7 @@ https://github.com/timothebot/lacy
 #[derive(Parser, Debug)]
 #[command(
     version,
-    about, 
+    about,
     override_usage="lacy init --help",
     help_template=HELP_TEMPLATE
 )]
@@ -34,7 +34,7 @@ pub struct LacyCli {
 pub enum LacyCommand {
     /// Return all paths matching the given query.
     Prompt(Prompt),
-    
+
     /// Generate the shell configuration
     Init(Init),
 

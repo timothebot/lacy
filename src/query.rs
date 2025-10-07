@@ -59,7 +59,10 @@ impl Query {
     pub fn completions(&self, cwd: &Path) -> Vec<PathBuf> {
         let query = self.query.clone();
         if query.trim().is_empty() {
-            return sub_directories(cwd, 0).iter().map(|dir| dir.location().clone()).collect();
+            return sub_directories(cwd, 0)
+                .iter()
+                .map(|dir| dir.location().clone())
+                .collect();
         }
         if query.ends_with(" ") {
             return self
