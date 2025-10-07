@@ -1,9 +1,10 @@
 # From https://github.com/rust-lang/mdBook/wiki/Automated-Deployment%3A-GitHub-Actions#GitHub-Pages-Deploy
 name: Deploy
 on:
+  pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
