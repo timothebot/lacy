@@ -55,32 +55,3 @@ Built with <3 by [timothebot](https://github.com/timothebot)
 <br>
 
 *Haven't found what you are looking for? try looking in the [docs](https://lacy.tiimo.space/) :)*
-
-
-
-```r
-# If it works in cd, it works in lacy :D
-cd /foo/bar/baz
-y /foo/bar/baz
-
-
-# Type faster!
-cd Desktop/foo/bar
-y dskt fooo bar
-(?) Lacy allows you to type more naturally!
-
-# Mistakes? Not with lacy!
-cd /Users/tiimo
-y / usrs timboo
-# (?) Lacy uses a custom fuzzy algorithm specifically designed for terminal navigation!
-
-# Quality of life!
-cd ../../..
-y ....
-
-
-# Just skip directories with -!!
-cd Desktop/foo/bar
-y ....
-(?) If you are not sure in what folder your target destination is, just replace it with - and let lacy handle it!
-```
