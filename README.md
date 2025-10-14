@@ -3,7 +3,7 @@
 <img src="./docs/assets/lacy_logo.png" width="150">
 <h1>Lacy</h1>
 
-Lacy is a <i>magical cd alternative</i> that makes navigating much more efficient!
+Lacy is a ${{\color{Lavender}\textsf{magical\ cd\ alternative}}}\$  that makes navigating much more efficient!
 <br>
 <br>
 <sup>
@@ -29,35 +29,12 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 <a href="https://lacy.tiimo.space/faq">FAQ</a>
 &nbsp;~&nbsp;
 <a href="https://lacy.tiimo.space/">Documentation</a>
-</div>
-
+<br>
 <br>
 
-<pre>
-<code><span style="color: gray"># If it works in cd, it works in lacy :D</span>
-<span style="color: darkgray">cd</span><span style="color: silver"> /foo/bar/baz</span>
-<span style="color: springgreen">y</span><span style="color: palegreen"> /foo/bar/baz</span>
+<img src="docs/assets/showcase.png">
 
-
-<span style="color: gray"># Type faster!</span>
-<span style="color: darkgray">cd</span><span style="color: silver"> Desktop/foo/bar</span>
-<span style="color: springgreen">y</span><span style="color: palegreen"> dskt fooo bar</span>
-<sup style="color: gray; line-height: 30px;">(?) Lacy allows you to type more naturally!</sup>
-
-<span style="color: gray"># Mistakes? Not with lacy!</span>
-<span style="color: darkgray">cd</span><span style="color: silver"> /Users/tiimo</span>
-<span style="color: springgreen">y</span><span style="color: palegreen"> / usrs timboo</span>
-<sup style="color: gray; line-height: 30px;">(?) Lacy uses a custom fuzzy algorithm specifically designed for terminal navigation!</sup>
-
-<span style="color: gray"># Quality of life!</span>
-<span style="color: darkgray">cd</span><span style="color: silver"> ../../..</span>
-<span style="color: springgreen">y</span><span style="color: palegreen"> ....</span>
-
-
-<span style="color: gray"># Just skip directories with -!!</span>
-<span style="color: darkgray">cd</span><span style="color: silver"> Desktop/foo/bar</span>
-<span style="color: springgreen">y</span><span style="color: palegreen"> ....</span>
-<sup style="color: gray; line-height: 30px;">(?) If you are not sure in what folder your target destination is, just replace it with - and let lacy handle it!</sup></code></pre>
+</div>
 
 Not convinced yet? Check out [all features](https://lacy.tiimo.space/features)!
 
@@ -78,3 +55,32 @@ Built with <3 by [timothebot](https://github.com/timothebot)
 <br>
 
 *Haven't found what you are looking for? try looking in the [docs](https://lacy.tiimo.space/) :)*
+
+
+
+```r
+# If it works in cd, it works in lacy :D
+cd /foo/bar/baz
+y /foo/bar/baz
+
+
+# Type faster!
+cd Desktop/foo/bar
+y dskt fooo bar
+(?) Lacy allows you to type more naturally!
+
+# Mistakes? Not with lacy!
+cd /Users/tiimo
+y / usrs timboo
+# (?) Lacy uses a custom fuzzy algorithm specifically designed for terminal navigation!
+
+# Quality of life!
+cd ../../..
+y ....
+
+
+# Just skip directories with -!!
+cd Desktop/foo/bar
+y ....
+(?) If you are not sure in what folder your target destination is, just replace it with - and let lacy handle it!
+```
