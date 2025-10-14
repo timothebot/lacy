@@ -12,7 +12,7 @@ impl From<String> for Query {
     fn from(query: String) -> Self {
         let mut enhanced_query = query.clone().trim().replace("  ", " ");
         if enhanced_query.starts_with("/") {
-            enhanced_query = format!("##ROOT##{}", enhanced_query.strip_prefix("/").unwrap());
+            enhanced_query = format!("##ROOT## {}", enhanced_query.strip_prefix("/").unwrap());
         }
         if enhanced_query.ends_with("/") {
             enhanced_query = enhanced_query.strip_suffix("/").unwrap().to_string();
@@ -42,7 +42,6 @@ impl From<String> for Query {
 impl Query {
     pub fn results(&self, cwd: &Path) -> Vec<PathBuf> {
         let Some(start_dir) = Directory::try_from(cwd).ok() else {
-            eprintln!("Couldn't get the current dir!");
             return vec![];
         };
         let mut directories = vec![start_dir];
@@ -72,11 +71,8 @@ impl Query {
                 .map(|dir| dir.location().clone())
                 .collect();
         }
-        match &self.parts.last().unwrap_or(&QueryPart::Root) {
-            QueryPart::Text(_) => {
-                return self.results(cwd);
-            }
-            _ => {}
+        if let QueryPart::Text(_) = &self.parts.last().unwrap_or(&QueryPart::Root) {
+            return self.results(cwd);
         }
         vec![]
     }
