@@ -24,4 +24,16 @@ These tools are great and a great inspiration for lacy, but the goal of lacy is 
 
 ## Technical Questions
 
-### Can I use 
+### Can I change the default lacy key?
+
+Default is `y`, but you can easily change it by modifying the `lacy init shell` command.
+You can change it by passing the `--cmd` option, e.g. `lacy init zsh --cmd c` sets it to `c`.
+
+See [shell options](./setup.md#shell-options) for all available options.
+
+### Can I use my own selector instead of the built in one?
+
+Yes! For example, you may want to use [fzf](https://github.com/junegunn/fzf).
+You can easily do that by passing the `--custom-fuzzy` option to `lacy init shell`, e.g. `lacy init zsh --custom-fuzzy fzf`.
+
+See [shell options](./setup.md#shell-options) for all available options.
