@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::{fs, os::unix::fs::symlink, path::PathBuf};
 
 use lacy::query::Query;
 use tempfile::TempDir;
@@ -58,6 +58,12 @@ impl TempEnv {
                 }
             }
         }
+
+        symlink(
+            tmpdir.path().join("test/alpha"),
+            tmpdir.path().join("test/link"),
+        )
+        .unwrap();
 
         Self { dir: tmpdir }
     }
@@ -217,5 +223,26 @@ fn test_real_paths() {
     assert_eq!(
         env.resolve_query("test /alpha/beta/ del6"),
         vec![env.abs_path("test/alpha/beta/delta6")]
+    );
+}
+
+#[test]
+fn test_symlinks() {
+    let env = TempEnv::new();
+
+    assert_eq!(
+        env.resolve_query("test link beta"),
+        vec![env.abs_path("test/link/beta")]
+    );
+    assert_eq!(
+        env.resolve_query("test link - gamma3"),
+        vec![env.abs_path("test/link/beta/gamma3")]
+    );
+    assert_eq!(
+        env.resolve_query("test - beta gamma3"),
+        vec![
+            env.abs_path("test/alpha/beta/gamma3"),
+            env.abs_path("test/link/beta/gamma3")
+        ]
     );
 }
