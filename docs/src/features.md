@@ -1,6 +1,12 @@
 # Features
 
-Lacy has two type of features: [Improved CD features](#improved-cd-features) and [new lacy features](#new-lacy-features).
+- [Improved CD Features](#improved-cd-features)
+  - [Navigation](#navigation)
+  - [Back Navigation](#back-navigation)
+  - [Path History Navigation](#path-history-navigation)
+- [New Lacy Features](#new-lacy-features)
+  - [Skipping Directories](#skipping-directories)
+  - [Multiple Results](#multiple-results)
 
 To use lacy, you use the `y` command. (You can easily change the default key, see [FAQ](./faq.md))
 
