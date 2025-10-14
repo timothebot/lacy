@@ -1,5 +1,17 @@
 # Install
 
+After installation, don't forget to do [setup](./setup.md)!
+
+- [Cargo (Universal)](#cargo-universal)
+- [Homebrew (macOS/Linux)](#homebrew-macoslinux)
+- [NixOS ❄️](#nixos-️)
+  - [1. Home Manager Module (Recommended)](#1-home-manager-module-recommended)
+  - [2. Nix Overlay (NixOS / Home Manager)](#2-nix-overlay-nixos--home-manager)
+    - [For NixOS](#for-nixos)
+    - [For Home Manager](#for-home-manager)
+  - [3. Run `lacy` directly](#3-run-lacy-directly)
+
+
 ## Cargo (Universal)
 
 ```sh

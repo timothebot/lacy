@@ -59,7 +59,6 @@ Lacy is a <i>magical cd alternative</i> that makes navigating much more efficien
 <span style="color: springgreen">y</span><span style="color: palegreen"> ....</span>
 <sup style="color: gray; line-height: 30px;">(?) If you are not sure in what folder your target destination is, just replace it with - and let lacy handle it!</sup></code></pre>
 
-
 Not convinced yet? Check out [all features](https://lacy.tiimo.space/features)!
 
 ---
