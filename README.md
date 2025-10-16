@@ -3,7 +3,7 @@
 <img src="./docs/assets/lacy_logo.png" width="150">
 <h1>Lacy</h1>
 
-Lacy is a ${{\color{Lavender}\textsf{magical\ cd\ alternative}}}\$  that makes navigating much more efficient!
+Lacy is a **magical cd alternative**  that makes navigating much more efficient!
 <br>
 <br>
 <sup>
