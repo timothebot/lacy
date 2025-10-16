@@ -27,24 +27,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Get version
         id: get_version
-        uses: SebRollen/toml-action@b1b3628f55fc3a28208d4203ada8b737e9687876
+        uses: SebRollen/toml-action@v1.2.0
         with:
           file: Cargo.toml
           field: package.version
       - name: Install Rust
-        uses: actions-rs/toolchain@5d458579430fc14a04a08a1e7d3694f545e91ce6
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           profile: minimal
           override: true
           target: ${{ matrix.target }}
       - name: Setup cache
-        uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0
+        uses: Swatinem/rust-cache@v2.8.1
         with:
           key: ${{ matrix.target }}
       - name: Install cross
@@ -67,7 +67,7 @@ jobs:
               gzip --best > \
               $BINARY_NAME-${{ steps.get_version.outputs.value }}-${{ matrix.target }}.tar.gz
       - name: Upload artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}
           path: |
@@ -75,7 +75,7 @@ jobs:
             *.zip
             Cargo.lock
       - name: Create release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090
+        uses: softprops/action-gh-release@v2
         with:
           draft: true
           files: |
@@ -91,10 +91,10 @@ jobs:
     needs: [release]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@5d458579430fc14a04a08a1e7d3694f545e91ce6
-      - uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - name: Publish to crates.io
         run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
