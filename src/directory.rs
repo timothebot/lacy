@@ -106,6 +106,12 @@ impl TryFrom<&Path> for Directory {
     type Error = ();
 
     fn try_from(path: &Path) -> Result<Self, Self::Error> {
+        if path.is_symlink() {
+            return Ok(Directory::new(
+                path.file_name().ok_or(())?.display().to_string(),
+                path.to_path_buf(),
+            ));
+        }
         if path.is_dir() {
             let Some(file_name) = path.file_name() else {
                 return Ok(Directory::new(String::new(), path.to_path_buf()));
@@ -113,12 +119,6 @@ impl TryFrom<&Path> for Directory {
             return Ok(Directory::new(
                 file_name.display().to_string(),
                 path.to_path_buf(),
-            ));
-        }
-        if path.is_symlink() {
-            return Ok(Directory::new(
-                path.file_name().ok_or(())?.display().to_string(),
-                path.read_link().map_err(|_| ())?,
             ));
         }
         Err(())

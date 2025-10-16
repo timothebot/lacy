@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{collections::HashSet, fs, path::PathBuf};
 
 use crate::{
     cmd::{Prompt, Run},
@@ -40,6 +40,24 @@ impl Run for Prompt {
                     .iter()
                     .map(|path_buf| path_buf.display().to_string())
                     .collect::<Vec<String>>();
+
+                // Canonicalize the paths to see if we have two different paths pointing
+                // to the same location
+                let filtered_paths = paths
+                    .clone()
+                    .into_iter()
+                    .map(|path| {
+                        fs::canonicalize(&path)
+                            .map(|canonicalized| canonicalized.display().to_string())
+                            .unwrap_or(path.to_string())
+                    })
+                    .collect::<HashSet<_>>()
+                    .into_iter()
+                    .collect::<Vec<String>>();
+                if filtered_paths.len() == 1 {
+                    println!("{}", filtered_paths.first().unwrap());
+                    return;
+                }
                 if self.return_all {
                     println!("{}", paths.join("\n"));
                     return;
