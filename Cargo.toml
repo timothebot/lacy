@@ -13,6 +13,8 @@ exclude = [
     "test/*",
     "devtools/*"
 ]
+categories = ["command-line-utilities"]
+keywords = ["cli", "tool", "utility"]
 
 [dependencies]
 clap = { version = "4.5.48", features = ["derive"] }
