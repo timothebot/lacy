@@ -40,11 +40,67 @@ Not convinced yet? Check out [all features](https://lacy.tiimo.space/features)!
 
 ---
 
+## Install
+
+### Cargo (Universal)
+
+```sh
+cargo install lacy
+```
+
+### Homebrew (macOS/Linux)
+
+```sh
+brew install timothebot/tap/lacy
+```
+
+### NixOS / Nix Flake
+
+See in the [documentation](https://lacy.tiimo.space/install.html#nixos-).
+
+## Setup
+
+After you installed lacy, you have to add it's shell configuration to your shell. ([learn why](https://lacy.tiimo.space/faq.html#why-does-it-need-a-shell-script))
+
+<details>
+<summary>ZSH</summary>
+
+```shell
+# ~/.zshrc
+eval "$(lacy init zsh)"
+```
+
+</details>
+
+<details>
+<summary>Bash</summary>
+
+```shell
+# ~/.bashrc
+eval "$(lacy init bash)"
+```
+
+</details>
+
+<details>
+<summary>Fish</summary>
+
+```shell
+# ~/.config/fish/config.fish
+lacy init fish | source
+```
+
+</details>
+
+<sup>If your shell is missing, feel free to create an issue!</sup>
+
+---
+
 ## Contributions
 
 Feel free to open a PR for any type of changes!
 
-## AI notice
+## Note
 
 The code in this repository was written by hand. AI was used for the different shell configurations.
 
