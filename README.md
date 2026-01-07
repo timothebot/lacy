@@ -90,6 +90,14 @@ eval "$(lacy init bash)"
 lacy init fish | source
 ```
 
+<details>
+<summary>PowerShell</summary>
+
+```powershell
+# $PROFILE
+lacy init powershell | Out-String | iex
+```
+
 </details>
 
 <sup>If your shell is missing, feel free to create an issue!</sup>

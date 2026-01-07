@@ -73,9 +73,12 @@ $ echo \"eval \\\"\\$(lacy init bash)\\\"\" >> ~/.bashrc
 
 Fish:
 $ echo \"lacy init fish | source\" >> ~/.config/fish/config.fish"
+
+PowerShell:
+$ echo \"lacy init powershell | Out-String | iex\" >> $PROFILE"
 )]
 pub struct Init {
-    /// Currently supported shells: bash, fish, zsh
+    /// Currently supported shells: bash, fish, zsh, powershell
     pub shell: String,
 
     /// Allows you to specify another command than cd, e.g. z
