@@ -3,3 +3,7 @@ authors = ["timothebot"]
 language = "en"
 src = "src"
 title = "Lacy Documentation"
+
+[output.html]
+git-repository-url = "https://github.com/timothebot/lacy"
+edit-url-template = "https://github.com/timothebot/lacy/edit/main/docs/{path}"
