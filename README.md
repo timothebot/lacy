@@ -54,6 +54,12 @@ cargo install lacy
 brew install timothebot/tap/lacy
 ```
 
+### AUR (Arch Linux)
+
+```sh
+yay -S lacy # or whatever aur helper you're using
+```
+
 ### NixOS / Nix Flake
 
 See in the [documentation](https://lacy.tiimo.space/install.html#nixos-).
