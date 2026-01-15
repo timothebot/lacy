@@ -17,6 +17,9 @@ impl From<String> for Query {
         if enhanced_query.ends_with("/") {
             enhanced_query = enhanced_query.strip_suffix("/").unwrap().to_string();
         }
+        if enhanced_query == "" {
+            enhanced_query = "~".to_string()
+        }
         enhanced_query = enhanced_query
             .replace(" / ", " ##ROOT## ")
             .replace(" ", "/")
