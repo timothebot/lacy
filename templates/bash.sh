@@ -1,7 +1,9 @@
 # START generated Lacy shell config
 {{ lacy_cmd }}() {
     new_path=$(lacy prompt {{ return_all }}-- "$*")
-    if [ "$new_path" = "~" ]; then
+    if [ -z "$*" ]; then
+        {{ cd }} ~
+    elif [ "$new_path" = "~" ]; then
         {{ cd }} ~
     {% if custom_fuzzy.enabled %}elif [[ "$new_path" == *$'\n'* ]]; then
         selected=$(printf "%s\n" "$new_path" | {{ custom_fuzzy.cmd }})
