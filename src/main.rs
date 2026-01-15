@@ -5,7 +5,6 @@ use crate::cmd::Run;
 
 mod cmd;
 mod directory;
-mod fuzzy;
 mod query;
 mod query_part;
 mod ui;

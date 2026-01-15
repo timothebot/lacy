@@ -3,8 +3,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::fuzzy::fuzzy_match_score;
-
 pub fn get_current_directory() -> PathBuf {
     env::current_dir().unwrap_or(PathBuf::from("/"))
 }
@@ -73,7 +71,7 @@ pub fn scored_directories(directories: Vec<Directory>, query: &str) -> Vec<Score
     directories
         .iter()
         .map(|directory| {
-            let score = fuzzy_match_score(directory.name(), query);
+            let score = fuzzy_dir::score_dir(directory.name(), query);
             ScoredDirectory::new(directory.clone(), score)
         })
         .collect()

@@ -19,6 +19,7 @@ keywords = ["cli", "tool", "utility"]
 [dependencies]
 clap = { version = "4.5.48", features = ["derive"] }
 dialoguer = "0.12.0"
+fuzzy_dir = "0.1.0"
 upon = "0.10.0"
 
 [dev-dependencies]
