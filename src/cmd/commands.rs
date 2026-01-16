@@ -72,7 +72,7 @@ Bash:
 $ echo \"eval \\\"\\$(lacy init bash)\\\"\" >> ~/.bashrc
 
 Fish:
-$ echo \"lacy init fish | source\" >> ~/.config/fish/config.fish"
+$ echo \"lacy init fish | source\" >> ~/.config/fish/config.fish
 
 PowerShell:
 $ echo \"lacy init powershell | Out-String | iex\" >> $PROFILE"
