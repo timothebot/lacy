@@ -1,44 +1,65 @@
 # START generated Lacy shell config
-function {{ lacy_cmd }} {
-    param($Query = "")
-    $newPath = lacy prompt {{ return_all }}-- "$Query"
-    if ($newPath -eq "~") {
-        {{ cd }} ~
-    }
-    {% if custom_fuzzy.enabled %}
-    elseif ($newPath.Contains("`n")) {
-        $selected = $newPath | {{ custom_fuzzy.cmd }}
-        if ($selected) {
-            {{ cd }} "$selected"
+function {{lacy_cmd}} {
+    param(
+        [Parameter(ValueFromRemainingArguments=$true)]
+        $QueryParts
+    )
+    
+    # Join parts and normalize slashes
+    $RawQuery = "$QueryParts" -replace '/', '\'
+    
+    # If the query starts with a slash, check if it's a real root folder.
+    # If C:\[string] doesn't exist, remove the slash so Lacy searches locally.
+    if ($RawQuery.StartsWith('\')) {
+        if (-not (Test-Path -Path $RawQuery -PathType Container)) {
+            $FullQuery = $RawQuery.TrimStart('\')
+        } else {
+            $FullQuery = $RawQuery
         }
-    }
-    {% endif %}
-    elseif (Test-Path -Path $newPath -PathType Container) {
-        {{ cd }} "$newPath"
+    } 
+    # Handle relative paths
+    elseif ($RawQuery.StartsWith('.\')) {
+        $FullQuery = Resolve-Path -Path $RawQuery -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Path
+        if (-not $FullQuery) { $FullQuery = $RawQuery }
     }
     else {
-        Write-Error "Error: No matching directory found for '$Query'"
+        $FullQuery = $RawQuery
     }
-}
+    
+    try {
+        # Get output from lacy
+        $rawOutput = lacy prompt {{return_all}}-- "$FullQuery"
+        
+        if ([string]::IsNullOrWhiteSpace($rawOutput)) {
+            if (Test-Path -Path $RawQuery -PathType Container) {
+                {{cd}} "$RawQuery"
+            }
+            return 
+        }
 
-function __{{ lacy_cmd }}_autocomplete {
-    param($wordToComplete, $commandAst, $cursorPosition)
-    $dirs = lacy complete --basename -- "$wordToComplete"
-    $dirs -split "`n" | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        $newPath = @([string]$rawOutput)[-1].Trim()
     }
-}
+    catch {
+        return
+    }
 
-Register-ArgumentCompleter -CommandName '{{ lacy_cmd }}' -ParameterName 'Query' -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $cursorPosition)
-    __{{ lacy_cmd }}_autocomplete $wordToComplete $commandAst $cursorPosition
-}
+    # Handle Home shortcut
+    if ($newPath -eq "~") {
+        {{cd}} ~
+        return
+    }
 
-Register-ArgumentCompleter -CommandName 'lacy' -ParameterName 'command' -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $cursorPosition)
-    $commands = @('prompt', 'complete', 'init', 'help')
-    $commands | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+    {% if custom_fuzzy.enabled %}
+    # Handle Fuzzy Finder
+    if ($rawOutput -match "\n") {
+        $selected = $rawOutput | {{custom_fuzzy.cmd}}
+        if ($selected) { {{cd}} "$selected" }
+        return
+    }
+    {% endif %}
+
+    if (Test-Path -Path $newPath -PathType Container) {
+        {{cd}} "$newPath"
     }
 }
 # END generated Lacy shell config
