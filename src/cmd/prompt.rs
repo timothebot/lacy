@@ -62,6 +62,14 @@ impl Run for Prompt {
                     println!("{}", paths.join("\n"));
                     return;
                 }
+
+                // Prevents cursor from being hidden when canceling
+                // the selection. (See #58)
+                let _ = ctrlc::set_handler(move || {
+                    let term = dialoguer::console::Term::stderr();
+                    let _ = term.show_cursor();
+                    std::process::exit(1);
+                });
                 if let Some(selected) = ui::select("Multiple possibilities found!", paths) {
                     println!("{}", selected);
                 }
