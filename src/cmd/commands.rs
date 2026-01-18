@@ -3,8 +3,8 @@ use clap::{Parser, Subcommand};
 const HELP_TEMPLATE: &str = "
  _     _   ____ __
 | |   / \\ / _\\ V /
-| |_ | o ( (_ \\ / 
-|___||_n_|\\__||_| 
+| |_ | o ( (_ \\ /
+|___||_n_|\\__||_|
 
 v{version}
 https://github.com/timothebot/lacy
@@ -79,7 +79,7 @@ pub struct Init {
     pub shell: String,
 
     /// Allows you to specify another command than cd, e.g. z
-    #[arg(long, default_value = "cd")]
+    #[arg(long, default_value = "builtin cd")] // so it works correctly if cmd='cd'
     pub cd_cmd: String,
 
     /// Define what alias the lacy command has
