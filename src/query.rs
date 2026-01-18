@@ -11,6 +11,12 @@ pub struct Query {
 impl From<String> for Query {
     fn from(query: String) -> Self {
         let mut enhanced_query = query.clone().trim().replace("  ", " ");
+        if enhanced_query.trim().is_empty() {
+            return Query {
+                query,
+                parts: vec![],
+            };
+        }
         if enhanced_query.starts_with("/") {
             enhanced_query = format!("##ROOT## {}", enhanced_query.strip_prefix("/").unwrap());
         }
