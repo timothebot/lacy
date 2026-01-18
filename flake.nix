@@ -31,7 +31,7 @@
 
             passthru.updateScript = nix-update-script { };
 
-            cargoHash = "sha256-eE/kyb09AwcYTsyXQ9Yn43QF2veCRAgGkNgykJHCsFE=";
+            cargoHash = "sha256-OJW29CopdO7lbkr0F2KVnfbRGEGIf8J8Vu8YChjeElY=";
 
             meta = {
               description = "Fast magical cd alternative for lacy terminal navigators";
