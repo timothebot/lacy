@@ -90,6 +90,8 @@ eval "$(lacy init bash)"
 lacy init fish | source
 ```
 
+</details>
+
 <details>
 <summary>PowerShell</summary>
 
