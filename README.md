@@ -98,6 +98,16 @@ lacy init fish | source
 
 </details>
 
+<details>
+<summary>PowerShell</summary>
+
+```powershell
+# $PROFILE
+lacy init powershell | Out-String | iex
+```
+
+</details>
+
 <sup>If your shell is missing, feel free to create an issue!</sup>
 
 ---

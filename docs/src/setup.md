@@ -27,6 +27,13 @@ eval "$(lacy init bash)"
 lacy init fish | source
 ```
 
+### PowerShell
+
+```powershell
+# $PROFILE
+lacy init powershell | Out-String | iex
+```
+
 ### Other shells
 
 Feel free to contribute the init script for your preferred shell.
