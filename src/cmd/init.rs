@@ -30,11 +30,17 @@ pub fn shell_config(
     let _ = engine.add_template("bash", include_str!("../../templates/bash.sh"));
     let _ = engine.add_template("zsh", include_str!("../../templates/zsh.sh"));
     let _ = engine.add_template("fish", include_str!("../../templates/fish.fish"));
+    let _ = engine.add_template("nu", include_str!("../../templates/nu.nu"));
 
     engine
         .template(shell)
         .render(value! {
-            cd: cd_cmd,
+            // Nushell does not have a builtin command
+            cd: if shell == "nu" && cd_cmd == "builtin cd" {
+                "cd"
+            } else {
+                cd_cmd
+            },
             lacy_cmd: cmd,
             return_all: if custom_fuzzy.is_some() {
                 String::from("--return-all ")
@@ -62,6 +68,9 @@ mod tests {
             .unwrap();
         engine
             .add_template("fish", include_str!("../../templates/fish.fish"))
+            .unwrap();
+        engine
+            .add_template("nu", include_str!("../../templates/nu.nu"))
             .unwrap();
     }
 }
