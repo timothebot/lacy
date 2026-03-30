@@ -15,11 +15,12 @@ function {{ lacy_cmd }}
     end
 end
 function __{{ lacy_cmd }}_autocomplete
-    set args $argv
-    if test "$args" = ""
+    set query (string split " " (commandline -c))
+    set query (string join " " $query[2..-1])
+    if test "$query" = ""
         ls -D --icons=never -1
     else
-        set dirs (string split ' ' (lacy complete -- "$args"))
+        set dirs (string split ' ' (lacy complete -- "$query"))
         for dir in $dirs
             basename $dir
         end
