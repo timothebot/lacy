@@ -27,12 +27,12 @@ module lacy {
         let new_path = (lacy prompt {{ return_all }}-- $"($query)")
         if $new_path == "~" {
             {{ cd }} ~
-        {% if custom_fuzzy.enabled %} } else if ($new_path | str contains " ") {
-            let selected = ($new_path | split row " " | str join "\n" | {{ custom_fuzzy.cmd }})
+        {% if custom_fuzzy.enabled %} } else if ($new_path | str contains "\n") {
+            let selected = ($new_path | {{ custom_fuzzy.cmd }})
             if ($selected | path exists) and ($selected | path type) == "dir" {
                 {{ cd }} $selected
             }
-        {% endif %}} else if ($new_path | path exists) and ($new_path | path type) == "dir" {
+        {% endif %} } else if ($new_path | path exists) and ($new_path | path type) == "dir" {
             {{ cd }} $new_path
         } else {
             print $"Error: No matching directory found for '($query)'"
@@ -40,4 +40,9 @@ module lacy {
     }
 }
 use lacy {{ lacy_cmd }}
+
+export extern "lacy help" []
+export extern "lacy prompt" []
+export extern "lacy complete" []
+export extern "lacy init" []
 # END generated Lacy shell config
