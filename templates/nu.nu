@@ -40,9 +40,4 @@ module lacy {
     }
 }
 use lacy {{ lacy_cmd }}
-
-export extern "lacy help" []
-export extern "lacy prompt" []
-export extern "lacy complete" []
-export extern "lacy init" []
 # END generated Lacy shell config
