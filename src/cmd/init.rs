@@ -32,6 +32,16 @@ pub fn shell_config(
     let _ = engine.add_template("fish", include_str!("../../templates/fish.fish"));
     let _ = engine.add_template("powershell", include_str!("../../templates/powershell.ps1"));
 
+    // Overwrite the default cd_cmd for certain shells
+    let cd_cmd = if cd_cmd == "builtin cd" {
+        match shell {
+            "powershell" => "Set-Location",
+            _ => cd_cmd
+        }
+    } else {
+        cd_cmd
+    };
+
     engine
         .template(shell)
         .render(value! {
