@@ -1,7 +1,10 @@
 #[cfg(unix)]
 use std::os::unix::fs::symlink;
 #[cfg(windows)]
-fn symlink<P: AsRef<std::path::Path>, Q: AsRef<std::path::Path>>(src: P, dst: Q) -> std::io::Result<()> {
+fn symlink<P: AsRef<std::path::Path>, Q: AsRef<std::path::Path>>(
+    src: P,
+    dst: Q,
+) -> std::io::Result<()> {
     std::os::windows::fs::symlink_dir(src, dst)
 }
 use std::{fs, path::PathBuf};

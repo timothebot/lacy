@@ -36,7 +36,7 @@ pub fn shell_config(
     let cd_cmd = if cd_cmd == "builtin cd" {
         match shell {
             "powershell" => "Set-Location",
-            _ => cd_cmd
+            _ => cd_cmd,
         }
     } else {
         cd_cmd
