@@ -111,6 +111,16 @@ lacy init nu | save -f ($nu.data-dir | path join "vendor/autoload/lacy.nu")
 
 </details>
 
+<details>
+<summary>PowerShell</summary>
+
+```powershell
+# $PROFILE
+lacy init powershell | Out-String | iex
+```
+
+</details>
+
 <sup>If your shell is missing, feel free to create an issue!</sup>
 
 ---

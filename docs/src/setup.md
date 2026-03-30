@@ -37,6 +37,13 @@ mkdir ($nu.data-dir | path join "vendor/autoload")
 lacy init nu | save -f ($nu.data-dir | path join "vendor/autoload/lacy.nu")
 ```
 
+### PowerShell
+
+```powershell
+# $PROFILE
+lacy init powershell | Out-String | iex
+```
+
 ### Other shells
 
 Feel free to contribute the init script for your preferred shell.
