@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fs, path::PathBuf};
+use std::{collections::HashSet, env, fs, path::PathBuf};
 
 use crate::{
     cmd::{Prompt, Run},
@@ -10,6 +10,14 @@ use crate::{
 impl Run for Prompt {
     fn run(&self) {
         let query = Query::from(self.query.clone());
+
+        if query.parts().is_empty() {
+            println!(
+                "{}",
+                env::var("LACY_NO_ARGS_PATH").unwrap_or_else(|_| String::from("~"))
+            );
+            return;
+        }
 
         /*
         _ if first_query_part.starts_with("-")
@@ -62,6 +70,14 @@ impl Run for Prompt {
                     println!("{}", paths.join("\n"));
                     return;
                 }
+
+                // Prevents cursor from being hidden when canceling
+                // the selection. (See #58)
+                let _ = ctrlc::set_handler(move || {
+                    let term = dialoguer::console::Term::stderr();
+                    let _ = term.show_cursor();
+                    std::process::exit(1);
+                });
                 if let Some(selected) = ui::select("Multiple possibilities found!", paths) {
                     println!("{}", selected);
                 }

@@ -6,7 +6,8 @@ pub fn select(title: &str, options: Vec<String>) -> Option<String> {
         .items(&options)
         .default(0)
         .interact_opt()
-        .unwrap()
+        .ok()
+        .flatten()
     {
         return Some(options[selection].to_string());
     }

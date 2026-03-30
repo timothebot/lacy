@@ -1,7 +1,7 @@
 [package]
 name = "lacy"
 description = "Fast magical cd alternative for lazy terminal navigators"
-version = "0.6.0"
+version = "0.6.1"
 authors =  ["timothebot"]
 repository = "https://github.com/timothebot/lacy"
 homepage = "https://github.com/timothebot/lacy"
@@ -18,6 +18,7 @@ keywords = ["cli", "tool", "utility"]
 
 [dependencies]
 clap = { version = "4.5.48", features = ["derive"] }
+ctrlc = { version = "3.5.1", features = ["termination"] }
 dialoguer = "0.12.0"
 upon = "0.10.0"
 

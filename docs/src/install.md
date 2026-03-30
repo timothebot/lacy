@@ -24,6 +24,12 @@ cargo install lacy
 brew install timothebot/tap/lacy
 ```
 
+### AUR (Arch Linux)
+
+```sh
+yay -S lacy # or whatever aur helper you're using
+```
+
 ## NixOS ❄️
 
 There are a couple of ways to get `lacy` up and running on your Nix system. Both methods require adding `lacy` to your `flake.nix` inputs.
