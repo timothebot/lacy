@@ -98,6 +98,19 @@ lacy init fish | source
 
 </details>
 
+<details>
+<summary>Nushell</summary>
+
+You can't set the lacy alias (`--cmd`) to `cd`. More infos below the table at [Shell Options](https://lacy.tiimo.space/setup.html#shell-options).
+
+```bash
+# $nu.config-path
+mkdir ($nu.data-dir | path join "vendor/autoload")
+lacy init nu | save -f ($nu.data-dir | path join "vendor/autoload/lacy.nu")
+```
+
+</details>
+
 <sup>If your shell is missing, feel free to create an issue!</sup>
 
 ---
