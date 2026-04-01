@@ -74,11 +74,14 @@ $ echo \"eval \\\"\\$(lacy init bash)\\\"\" >> ~/.bashrc
 Fish:
 $ echo \"lacy init fish | source\" >> ~/.config/fish/config.fish
 
+Nu (check docs before updating init options for nu):
+$ echo r#'mkdir ($nu.data-dir | path join \"vendor/autoload\"); lacy init nu | save -f ($nu.data-dir | path join \"vendor/autoload/lacy.nu\")'# o>> $nu.config-path
+
 PowerShell:
 $ echo \"lacy init powershell | Out-String | iex\" >> $PROFILE"
 )]
 pub struct Init {
-    /// Currently supported shells: bash, fish, zsh, powershell
+    /// Currently supported shells: bash, fish, zsh, nu, powershell
     pub shell: String,
 
     /// Allows you to specify another command than cd, e.g. z
