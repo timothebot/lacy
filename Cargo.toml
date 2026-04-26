@@ -19,8 +19,8 @@ keywords = ["cli", "tool", "utility"]
 [dependencies]
 clap = { version = "4.6.0", features = ["derive"] }
 ctrlc = { version = "3.5.2", features = ["termination"] }
-dialoguer = "0.12.0"
-upon = "0.10.0"
+dialoguer = { version = "0.12.0", default-features = false }
+upon = { version = "0.10.0", default-features = false, features = ["serde"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"
@@ -28,3 +28,4 @@ tempfile = "3.27.0"
 [profile.release]
 codegen-units = 1
 lto = true
+strip = true

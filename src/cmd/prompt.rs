@@ -1,4 +1,6 @@
-use std::{collections::HashSet, env, fs, path::PathBuf};
+use std::{env, fs, path::PathBuf};
+
+use dialoguer::console::Term;
 
 use crate::{
     cmd::{Prompt, Run},
@@ -14,7 +16,7 @@ impl Run for Prompt {
         if query.parts().is_empty() {
             println!(
                 "{}",
-                env::var("LACY_NO_ARGS_PATH").unwrap_or_else(|_| String::from("~"))
+                env::var("LACY_NO_ARGS_PATH").unwrap_or(String::from("~"))
             );
             return;
         }
@@ -44,44 +46,42 @@ impl Run for Prompt {
                 println!("{}", results.first().unwrap().display());
             }
             _ => {
-                let paths = results
-                    .iter()
-                    .map(|path_buf| path_buf.display().to_string())
-                    .collect::<Vec<String>>();
+                let paths = {
+                    let mut tmp = results
+                        .iter()
+                        .map(|path| {
+                            // Canonicalize the paths to see if we have two different paths
+                            // pointing to the same location
+                            fs::canonicalize(path)
+                                .unwrap()
+                                .to_str()
+                                .unwrap()
+                                .to_string()
+                        })
+                        .collect::<Vec<_>>();
+                    tmp.sort();
+                    tmp.dedup();
+                    tmp
+                };
 
-                // Canonicalize the paths to see if we have two different paths pointing
-                // to the same location
-                let filtered_paths = paths
-                    .clone()
-                    .into_iter()
-                    .map(|path| {
-                        fs::canonicalize(&path)
-                            .map(|canonicalized| canonicalized.display().to_string())
-                            .unwrap_or(path.to_string())
-                    })
-                    .collect::<HashSet<_>>()
-                    .into_iter()
-                    .collect::<Vec<String>>();
-                if filtered_paths.len() == 1 {
-                    println!("{}", filtered_paths.first().unwrap());
-                    return;
-                }
-                if self.return_all {
+                if paths.len() == 1 {
+                    println!("{}", paths.first().unwrap());
+                } else if self.return_all {
                     println!("{}", paths.join("\n"));
-                    return;
-                }
+                } else {
+                    // Prevents cursor from being hidden when canceling the selection.
+                    // See https://github.com/timothebot/lacy/issues/58.
+                    _ = ctrlc::set_handler(move || {
+                        let term = Term::stderr();
+                        _ = term.show_cursor();
+                        std::process::exit(1);
+                    });
 
-                // Prevents cursor from being hidden when canceling
-                // the selection. (See #58)
-                let _ = ctrlc::set_handler(move || {
-                    let term = dialoguer::console::Term::stderr();
-                    let _ = term.show_cursor();
-                    std::process::exit(1);
-                });
-                if let Some(selected) = ui::select("Multiple possibilities found!", paths) {
-                    println!("{}", selected);
+                    if let Some(selected) = ui::select("Multiple possibilities found!", &paths) {
+                        println!("{selected}");
+                    }
                 }
             }
-        };
+        }
     }
 }

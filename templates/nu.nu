@@ -32,12 +32,13 @@ module lacy {
             if ($selected | path exists) and ($selected | path type) == "dir" {
                 {{ cd }} $selected
             }
-        {% endif %} } else if ($new_path | path exists) and ($new_path | path type) == "dir" {
+        {% endif %} } else if ($new_path | path type) in ["dir", "symlink"] {
             {{ cd }} $new_path
         } else {
             print $"Error: No matching directory found for '($query)'"
         }
     }
 }
+
 use lacy {{ lacy_cmd }}
 # END generated Lacy shell config

@@ -29,7 +29,7 @@ lacy init fish | source
 
 ### Nushell
 
-You can't set the lacy alias (`--cmd`) to `cd`. More infos at [`--cmd`](#--cmd).
+You'll need a small hack to set lacy alias (`--cmd`) to `cd`. Check [`--cmd`](#--cmd).
 
 ```bash
 # $nu.config-path
@@ -69,9 +69,15 @@ The name of the main lacy command you use for navigating. (e.g. `--cmd=cd`)
 Default: `y`
 
 > [!WARNING]
-> Nushell doesn't have a `builtin cd` option,
-> so setting it `--cmd=cd` will cause a loop.
-> It should be possible to bypass this with some tinkering ([issue in nushell repo](https://github.com/nushell/nushell/issues/3792)). Feel free to open a PR if you have a good solution!
+> Nushell doesn't intrinsically have `builtin`, so `--cmd=cd` will cause infinite recursion.
+> See [issue in nushell repo](https://github.com/nushell/nushell/issues/3792) and [nushell book](https://www.nushell.sh/book/aliases.html#replacing-existing-commands-using-aliases).
+> 
+> Luckily, there is a hack:
+> ```bash
+> alias core-cd = cd
+> mkdir ($nu.data-dir | path join "vendor/autoload")
+> lacy init nu --cd-cmd=core-cd --cmd=cd | save -f ($nu.data-dir | path join "vendor/autoload/lacy.nu")
+> ```
 
 ### `--custom-fuzzy`
 

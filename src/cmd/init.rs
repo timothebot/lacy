@@ -10,10 +10,10 @@ impl Run for Init {
                 self.shell.as_str(),
                 &self.cd_cmd,
                 &self.cmd,
-                &self.custom_fuzzy
+                self.custom_fuzzy.as_ref()
             ) {
                 Ok(config) => config,
-                Err(err) => format!("An error occurred: {}", err),
+                Err(err) => format!("An error occurred: {err}"),
             }
         );
     }
@@ -23,15 +23,15 @@ pub fn shell_config(
     shell: &str,
     cd_cmd: &String,
     cmd: &String,
-    custom_fuzzy: &Option<String>,
+    custom_fuzzy: Option<&String>,
 ) -> Result<String, Error> {
     let mut engine = Engine::new();
 
-    let _ = engine.add_template("bash", include_str!("../../templates/bash.sh"));
-    let _ = engine.add_template("zsh", include_str!("../../templates/zsh.sh"));
-    let _ = engine.add_template("fish", include_str!("../../templates/fish.fish"));
-    let _ = engine.add_template("nu", include_str!("../../templates/nu.nu"));
-    let _ = engine.add_template("powershell", include_str!("../../templates/powershell.ps1"));
+    engine.add_template("bash", include_str!("../../templates/bash.sh"))?;
+    engine.add_template("zsh", include_str!("../../templates/zsh.sh"))?;
+    engine.add_template("fish", include_str!("../../templates/fish.fish"))?;
+    engine.add_template("nu", include_str!("../../templates/nu.nu"))?;
+    engine.add_template("powershell", include_str!("../../templates/powershell.ps1"))?;
 
     // Overwrite the default cd_cmd for certain shells
     let cd_cmd = if cd_cmd == "builtin cd" {
@@ -57,7 +57,7 @@ pub fn shell_config(
             },
             custom_fuzzy: {
                 enabled: &custom_fuzzy.is_some(),
-                cmd: custom_fuzzy.clone().unwrap_or_default()
+                cmd: custom_fuzzy.as_ref()
             }
         })
         .to_string()

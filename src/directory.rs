@@ -69,7 +69,7 @@ impl ScoredDirectory {
     }
 }
 
-pub fn scored_directories(directories: Vec<Directory>, query: &str) -> Vec<ScoredDirectory> {
+pub fn scored_directories(directories: &[Directory], query: &str) -> Vec<ScoredDirectory> {
     directories
         .iter()
         .map(|directory| {
@@ -79,7 +79,7 @@ pub fn scored_directories(directories: Vec<Directory>, query: &str) -> Vec<Score
         .collect()
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone)]
 pub struct Directory {
     /// The name of the directory
     name: String,
