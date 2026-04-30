@@ -58,27 +58,26 @@ pub struct Prompt {
 #[command(
     version,
     help_template=HELP_TEMPLATE,
-    after_help = "
-To get started, you must include lacy in your shell config.
+    after_help = r##"To get started, you must include lacy in your shell config.
 You can find more about why this is required in the docs.
 
 If you don't know what shell you are using, run:
 $ echo $SHELL
 
 ZSH:
-$ echo \"eval \\\"\\$(lacy init zsh)\\\"\" >> ~/.zshrc
+$ echo "eval \"\$(lacy init zsh)\"" >> ~/.zshrc
 
 Bash:
-$ echo \"eval \\\"\\$(lacy init bash)\\\"\" >> ~/.bashrc
+$ echo "eval \"\$(lacy init bash)\"" >> ~/.bashrc
 
 Fish:
-$ echo \"lacy init fish | source\" >> ~/.config/fish/config.fish
+$ echo "lacy init fish | source" >> ~/.config/fish/config.fish
 
 Nu (check docs before updating init options for nu):
-$ echo r#'mkdir ($nu.data-dir | path join \"vendor/autoload\"); lacy init nu | save -f ($nu.data-dir | path join \"vendor/autoload/lacy.nu\")'# o>> $nu.config-path
+$ echo r#'mkdir ($nu.data-dir | path join "vendor/autoload"); lacy init nu | save -f ($nu.data-dir | path join "vendor/autoload/lacy.nu")'# o>> $nu.config-path
 
 PowerShell:
-$ echo \"lacy init powershell | Out-String | iex\" >> $PROFILE"
+$ echo "lacy init powershell | Out-String | iex" >> $PROFILE"##
 )]
 pub struct Init {
     /// Currently supported shells: bash, fish, zsh, nu, powershell

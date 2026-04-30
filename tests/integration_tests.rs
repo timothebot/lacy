@@ -7,7 +7,10 @@ fn symlink<P: AsRef<std::path::Path>, Q: AsRef<std::path::Path>>(
 ) -> std::io::Result<()> {
     std::os::windows::fs::symlink_dir(src, dst)
 }
-use std::{fs, path::PathBuf};
+use std::{
+    fs::{self, canonicalize},
+    path::PathBuf,
+};
 
 use lacy::query::Query;
 use tempfile::TempDir;
@@ -61,10 +64,7 @@ impl TempEnv {
         for dir in dir_list {
             let path = tmpdir.path().join("test").join(dir);
             if !path.exists() {
-                let result = fs::create_dir_all(path);
-                if result.is_err() {
-                    panic!("Error, couldn't create test folder in tempdir!");
-                }
+                fs::create_dir_all(path).expect("Error, couldn't create test folder in tempdir!");
             }
         }
 
@@ -253,5 +253,36 @@ fn test_symlinks() {
             env.abs_path("test/alpha/beta/gamma3"),
             env.abs_path("test/link/beta/gamma3")
         ]
+    );
+}
+
+#[test]
+fn test_dots() {
+    let env = TempEnv::new();
+
+    fn resolve_query(path: PathBuf, query: &str) -> Vec<PathBuf> {
+        let query = Query::from(query.to_string());
+        query
+            .results(&path)
+            .iter()
+            // without canonicalize, `resolve_query(env.abs_path("epsilon/beta/chi6"), "..")`
+            // would just return `epsilon/beta/chi6/..`, which is fine for actual usage
+            // since it is further resolved by the os, but not for testing.
+            .map(canonicalize)
+            .collect::<Result<_, _>>()
+            .unwrap()
+    }
+
+    assert_eq!(
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".."),
+        vec![env.abs_path("test/epsilon/beta")]
+    );
+    assert_eq!(
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), "..."),
+        vec![env.abs_path("test/epsilon")]
+    );
+    assert_eq!(
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".. delta"),
+        vec![env.abs_path("test/epsilon/beta/del@ta")]
     );
 }
