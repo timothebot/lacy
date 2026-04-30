@@ -37,8 +37,7 @@ pub fn shell_config(
     let cd_cmd = if cd_cmd == "builtin cd" {
         match shell {
             "powershell" => "Set-Location",
-            // Nushell does not have a builtin command
-            "nu" => "cd",
+            "nu" => "%cd",
             _ => cd_cmd,
         }
     } else {

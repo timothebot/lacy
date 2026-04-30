@@ -101,7 +101,9 @@ lacy init fish | source
 <details>
 <summary>Nushell</summary>
 
-You'll need a small hack to set lacy alias (`--cmd`) to `cd`. Check [docs](https://lacy.tiimo.space/setup.html#--cmd).
+<!-- Remove this in like 2027 when everyone gets v0.113+ -->
+If you're running anything older than v0.112, you'll need `lacy init nu --cd-cmd=cd`.
+If you're running anything older than v0.113, you'll also need a small hack to set lacy alias (`--cmd`) to `cd`. Check [docs](https://lacy.tiimo.space/setup.html#--cmd).
 
 ```bash
 # $nu.config-path

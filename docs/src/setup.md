@@ -29,7 +29,9 @@ lacy init fish | source
 
 ### Nushell
 
-You'll need a small hack to set lacy alias (`--cmd`) to `cd`. Check [`--cmd`](#--cmd).
+<!-- Remove this in like 2027 when everyone gets v0.113+ -->
+If you're running anything older than v0.112, you'll need `lacy init nu --cd-cmd=cd`.
+If you're running anything older than v0.113, you'll also need a small hack to set lacy alias (`--cmd`) to `cd`. Check [`--cmd`](#--cmd).
 
 ```bash
 # $nu.config-path
@@ -59,7 +61,7 @@ Define the command to be used instead of `cd`. (e.g. `--cd-cmd=z`)
 Default:
 
 - Bash, ZSH, Fish: `builtin cd`
-- Nushell: `cd`
+- Nushell: `%cd`
 - PowerShell: `Set-Location`
 
 ### `--cmd`
@@ -69,10 +71,13 @@ The name of the main lacy command you use for navigating. (e.g. `--cmd=cd`)
 Default: `y`
 
 > [!WARNING]
-> Nushell doesn't intrinsically have `builtin`, so `--cmd=cd` will cause infinite recursion.
-> See [issue in nushell repo](https://github.com/nushell/nushell/issues/3792) and [nushell book](https://www.nushell.sh/book/aliases.html#replacing-existing-commands-using-aliases).
-> 
-> Luckily, there is a hack:
+> Even though nushell has an analogue of `builtin` keyword - which is the `%` sigil,
+> it was only added recently in v0.112 (and will break older versions!),
+> and it was actually bugged to the point that `--cmd=cd` would still have
+> caused infinite recursion, and that only got fixed in v0.113.
+>
+> So if you're running older versions, use this hack from the very
+> [nushell book](https://www.nushell.sh/book/aliases.html#replacing-existing-commands-using-aliases):
 > ```bash
 > alias core-cd = cd
 > mkdir ($nu.data-dir | path join "vendor/autoload")
