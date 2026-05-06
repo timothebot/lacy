@@ -275,14 +275,16 @@ fn test_dots() {
 
     assert_eq!(
         resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".."),
-        vec![env.abs_path("test/epsilon/beta")]
+        // i don't know why but macos is angry without canonicalize
+        // see https://github.com/timothebot/lacy/actions/runs/25148442151/job/74187399440?pr=66
+        vec![env.abs_path("test/epsilon/beta").canonicalize().unwrap()]
     );
     assert_eq!(
         resolve_query(env.abs_path("test/epsilon/beta/chi6"), "..."),
-        vec![env.abs_path("test/epsilon")]
+        vec![env.abs_path("test/epsilon").canonicalize().unwrap()]
     );
     assert_eq!(
         resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".. delta"),
-        vec![env.abs_path("test/epsilon/beta/del@ta")]
+        vec![env.abs_path("test/epsilon/beta/del@ta").canonicalize().unwrap()]
     );
 }
