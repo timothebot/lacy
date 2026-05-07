@@ -285,6 +285,9 @@ fn test_dots() {
     );
     assert_eq!(
         resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".. delta"),
-        vec![env.abs_path("test/epsilon/beta/del@ta").canonicalize().unwrap()]
+        vec![env
+            .abs_path("test/epsilon/beta/del@ta")
+            .canonicalize()
+            .unwrap()]
     );
 }
