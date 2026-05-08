@@ -19,7 +19,7 @@ impl Run for Complete {
                         Some(path_buf.display().to_string())
                     }
                 })
-                .collect::<Vec<String>>()
+                .collect::<Vec<_>>()
                 .join(" ")
         );
     }

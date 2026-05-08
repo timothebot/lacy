@@ -1,8 +1,11 @@
-use crate::directory::{sub_directories, Directory};
-use crate::query_part::QueryPart;
 use std::path::{Path, PathBuf};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+use crate::{
+    directory::{sub_directories, Directory},
+    query_part::QueryPart,
+};
+
+#[derive(Debug)]
 pub struct Query {
     query: String,
     parts: Vec<QueryPart>,
@@ -10,26 +13,26 @@ pub struct Query {
 
 impl From<String> for Query {
     fn from(query: String) -> Self {
-        let mut enhanced_query = query.clone().trim().replace("  ", " ");
+        let mut enhanced_query = query.trim().replace("  ", " ");
         if enhanced_query.trim().is_empty() {
             return Query {
                 query,
                 parts: vec![],
             };
         }
-        if enhanced_query.starts_with("/") {
+        if enhanced_query.starts_with('/') {
             enhanced_query = format!("##ROOT## {}", enhanced_query.strip_prefix("/").unwrap());
         }
-        if enhanced_query.ends_with("/") {
+        if enhanced_query.ends_with('/') {
             enhanced_query = enhanced_query.strip_suffix("/").unwrap().to_string();
         }
         enhanced_query = enhanced_query
             .replace(" / ", " ##ROOT## ")
-            .replace(" ", "/")
+            .replace(' ', "/")
             .replace("//", "/");
 
         let query_parts: Vec<QueryPart> = enhanced_query
-            .split("/")
+            .split('/')
             .map(|part| {
                 if part == "##ROOT##" {
                     return QueryPart::Root;
@@ -62,14 +65,13 @@ impl Query {
     }
 
     pub fn completions(&self, cwd: &Path) -> Vec<PathBuf> {
-        let query = self.query.clone();
-        if query.trim().is_empty() {
+        if self.query.trim().is_empty() {
             return sub_directories(cwd, 0)
                 .iter()
                 .map(|dir| dir.location().clone())
                 .collect();
         }
-        if query.ends_with(" ") {
+        if self.query.ends_with(' ') {
             return self
                 .results(cwd)
                 .iter()
