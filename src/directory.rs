@@ -3,8 +3,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::fuzzy::fuzzy_match_score;
-
 pub fn get_current_directory() -> PathBuf {
     env::current_dir().unwrap_or(PathBuf::from("/"))
 }
@@ -52,11 +50,11 @@ pub fn sub_directories(cwd: &Path, depth: u32) -> Vec<Directory> {
 #[derive(Debug)]
 pub struct ScoredDirectory {
     directory: Directory,
-    score: i32,
+    score: u32,
 }
 
 impl ScoredDirectory {
-    pub fn new(directory: Directory, score: i32) -> Self {
+    pub fn new(directory: Directory, score: u32) -> Self {
         Self { directory, score }
     }
 
@@ -64,7 +62,7 @@ impl ScoredDirectory {
         &self.directory
     }
 
-    pub fn score(&self) -> i32 {
+    pub fn score(&self) -> u32 {
         self.score
     }
 }
@@ -73,7 +71,7 @@ pub fn scored_directories(directories: &[Directory], query: &str) -> Vec<ScoredD
     directories
         .iter()
         .map(|directory| {
-            let score = fuzzy_match_score(directory.name(), query);
+            let score = fuzzy_dir::score_dir(directory.name(), query);
             ScoredDirectory::new(directory.clone(), score)
         })
         .collect()

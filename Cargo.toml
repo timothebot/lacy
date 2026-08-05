@@ -20,6 +20,7 @@ keywords = ["cli", "tool", "utility"]
 clap = { version = "4.6.0", features = ["derive"] }
 ctrlc = { version = "3.5.2", features = ["termination"] }
 dialoguer = { version = "0.12.0", default-features = false }
+fuzzy_dir = "0.2.0"
 upon = { version = "0.10.0", default-features = false, features = ["serde"] }
 
 [dev-dependencies]
