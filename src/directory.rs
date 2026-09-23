@@ -97,7 +97,7 @@ impl Directory {
         &self.name
     }
 
-    pub fn location(&self) -> &PathBuf {
+    pub fn location(&self) -> &Path {
         &self.location
     }
 }

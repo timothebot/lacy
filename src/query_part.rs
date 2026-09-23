@@ -56,7 +56,7 @@ impl QueryPart {
             }
             QueryPart::Skip(depth) => dirs
                 .iter()
-                .flat_map(|dir| sub_directories(dir.location().as_path(), *depth))
+                .flat_map(|dir| sub_directories(dir.location(), *depth))
                 .collect(),
             QueryPart::Back(amount) => {
                 let Some(target_dir) = dirs.first() else {
@@ -72,7 +72,7 @@ impl QueryPart {
                 let mut scored_dirs = scored_directories(
                     &dirs
                         .iter()
-                        .flat_map(|dir| sub_directories(dir.location().as_path(), 0))
+                        .flat_map(|dir| sub_directories(dir.location(), 0))
                         .collect::<Vec<_>>(),
                     text.as_str(),
                 );

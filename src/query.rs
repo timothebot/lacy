@@ -73,7 +73,7 @@ impl Query {
 
         directories
             .iter()
-            .map(|dir| dir.location().clone())
+            .map(|dir| dir.location().to_path_buf())
             .collect()
     }
 
@@ -81,7 +81,7 @@ impl Query {
         if self.query.trim().is_empty() {
             return sub_directories(cwd, 0)
                 .iter()
-                .map(|dir| dir.location().clone())
+                .map(|dir| dir.location().to_path_buf())
                 .collect();
         }
         if self.query.ends_with(' ') {
@@ -89,7 +89,7 @@ impl Query {
                 .results(cwd)
                 .iter()
                 .flat_map(|dir| sub_directories(dir, 0))
-                .map(|dir| dir.location().clone())
+                .map(|dir| dir.location().to_path_buf())
                 .collect();
         }
         if let QueryPart::Text(_) = &self.parts.last().unwrap_or(&QueryPart::Root) {
