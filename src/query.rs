@@ -1,4 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
 use crate::{
     directory::{sub_directories, Directory, ScoredDirectory},
@@ -57,6 +60,16 @@ impl Query {
         let mut directories = vec![ScoredDirectory::new(start_dir, 0)];
         for part in self.parts() {
             directories = part.matching_directories(&directories);
+        }
+
+        // https://lacy.tiimo.space/setup.html#LACY_FILTER_CWD
+        match env::var("LACY_FILTER_CWD").as_deref() {
+            Ok("0") => (),
+            Ok("2") => directories.retain(|dir| {
+                !fs::canonicalize(dir.location()).is_ok_and(|dir| cwd.starts_with(dir))
+            }),
+            Ok("1") | Ok(_) | Err(_) => directories
+                .retain(|dir| !fs::canonicalize(dir.location()).is_ok_and(|dir| dir == cwd)),
         }
 
         directories
