@@ -79,7 +79,11 @@ impl TempEnv {
 
     fn resolve_query(&self, query: &str) -> Vec<PathBuf> {
         let query = Query::from(query.to_string());
-        query.results(self.dir.path())
+        query
+            .results(self.dir.path())
+            .into_iter()
+            .map(|(path, _)| path)
+            .collect()
     }
 
     fn abs_path(&self, path: &str) -> PathBuf {
@@ -250,8 +254,8 @@ fn test_symlinks() {
     assert_eq!(
         env.resolve_query("test - beta gamma3"),
         vec![
+            env.abs_path("test/link/beta/gamma3"),
             env.abs_path("test/alpha/beta/gamma3"),
-            env.abs_path("test/link/beta/gamma3")
         ]
     );
 }
@@ -264,7 +268,8 @@ fn test_dots() {
         let query = Query::from(query.to_string());
         query
             .results(&path)
-            .iter()
+            .into_iter()
+            .map(|(path, _)| path)
             // without canonicalize, `resolve_query(env.abs_path("epsilon/beta/chi6"), "..")`
             // would just return `epsilon/beta/chi6/..`, which is fine for actual usage
             // since it is further resolved by the os, but not for testing.

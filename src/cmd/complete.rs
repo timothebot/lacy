@@ -14,9 +14,9 @@ impl Run for Complete {
                 .iter()
                 .filter_map(|path_buf| {
                     if self.basename {
-                        Some(path_buf.file_name()?.display().to_string())
+                        Some(path_buf.0.file_name()?.display().to_string())
                     } else {
-                        Some(path_buf.display().to_string())
+                        Some(path_buf.0.display().to_string())
                     }
                 })
                 .collect::<Vec<_>>()

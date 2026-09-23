@@ -49,7 +49,7 @@ pub fn sub_directories(cwd: &Path, depth: u32) -> Vec<Directory> {
     directories
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ScoredDirectory {
     directory: Directory,
     score: i32,

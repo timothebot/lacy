@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, fs};
+use std::{env, fs};
 
 use dialoguer::console::Term;
 
@@ -40,10 +40,10 @@ impl Run for Prompt {
              */
 
         let paths = {
-            let map = query
+            let mut paths = query
                 .results(get_current_directory().as_path())
                 .iter()
-                .filter_map(|path| {
+                .filter_map(|(path, score)| {
                     Some((
                         // Resolve symlinks, basically - so we can then
                         // deduplicate paths that lead to the same directory
@@ -52,15 +52,28 @@ impl Run for Prompt {
                             // Only leave directories and not files after symlinks
                             .filter(|p| p.is_dir())?,
                         // Store original path for display purposes
-                        path.to_str().map(|s| s.to_string())?,
+                        path.to_str()?.to_string(),
+                        *score,
                     ))
                 })
-                // Collect this to a hashmap as it intristically deduplicates keys
-                .collect::<HashMap<_, _>>();
-            // Then return sorted user-displayed strings
-            let mut v = map.into_values().collect::<Vec<_>>();
-            v.sort_unstable();
-            v
+                .collect::<Vec<_>>();
+            paths.sort_unstable_by(|(path_a, _, _), (path_b, _, _)| {
+                // sort by path for later deduplication
+                path_a.cmp(path_b)
+            });
+            paths.dedup_by(|(path_a, _, _), (path_b, _, _)| path_a == path_b);
+            paths.sort_unstable_by(|(_, name_a, score_a), (_, name_b, score_b)| {
+                // now that we've deduplicated it we can sort it for display
+                // first by score descending
+                score_b
+                    .cmp(score_a)
+                    // then by name ascending
+                    .then(name_a.cmp(name_b))
+            });
+            paths
+                .into_iter()
+                .map(|(_, name, _)| name)
+                .collect::<Vec<_>>()
         };
 
         if paths.len() == 1 {

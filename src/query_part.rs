@@ -1,4 +1,4 @@
-use std::{env::home_dir, path::PathBuf};
+use std::{env::home_dir, path::Path};
 
 use crate::directory::{scored_directories, sub_directories, Directory, ScoredDirectory};
 
@@ -37,42 +37,50 @@ impl From<&str> for QueryPart {
 }
 
 impl QueryPart {
-    pub fn matching_directories(&self, dirs: &[Directory]) -> Vec<Directory> {
+    pub fn matching_directories(&self, dirs: &[ScoredDirectory]) -> Vec<ScoredDirectory> {
         match &self {
             QueryPart::Tilde => {
-                let Ok(dir) =
-                    Directory::try_from(home_dir().unwrap_or(PathBuf::from("/")).as_path())
+                let Ok(dir) = Directory::try_from(home_dir().as_deref().unwrap_or(Path::new("/")))
                 else {
                     return vec![];
                 };
-                vec![dir]
+                vec![ScoredDirectory::new(dir, 0)]
             }
             QueryPart::Root => {
-                let Ok(dir) = Directory::try_from(PathBuf::from("/").as_path()) else {
+                let Ok(dir) = Directory::try_from(Path::new("/")) else {
                     eprintln!("Couldn't create Directory from root!");
                     return vec![];
                 };
-                vec![dir]
+                vec![ScoredDirectory::new(dir, 0)]
             }
             QueryPart::Skip(depth) => dirs
                 .iter()
-                .flat_map(|dir| sub_directories(dir.location(), *depth))
+                .flat_map(|dir| {
+                    sub_directories(dir.directory().location().as_path(), *depth)
+                        .into_iter()
+                        .map(|subdir| ScoredDirectory::new(subdir, dir.score()))
+                })
                 .collect(),
-            QueryPart::Back(amount) => {
-                let Some(target_dir) = dirs.first() else {
-                    return vec![];
-                };
-                let target_location = target_dir.location().join("../".repeat(*amount as usize));
-                let Ok(dir) = Directory::try_from(target_location.as_path()) else {
-                    return vec![];
-                };
-                vec![dir]
-            }
+            QueryPart::Back(amount) => dirs
+                .iter()
+                .filter_map(|dir| {
+                    Some(ScoredDirectory::new(
+                        Directory::try_from(
+                            dir.directory()
+                                .location()
+                                .join("../".repeat(*amount as usize))
+                                .as_ref(),
+                        )
+                        .ok()?,
+                        dir.score(),
+                    ))
+                })
+                .collect(),
             QueryPart::Text(text) => {
-                let mut scored_dirs = scored_directories(
+                let scored_dirs = scored_directories(
                     &dirs
                         .iter()
-                        .flat_map(|dir| sub_directories(dir.location(), 0))
+                        .flat_map(|dir| sub_directories(dir.directory().location().as_path(), 0))
                         .collect::<Vec<_>>(),
                     text.as_str(),
                 );
@@ -90,13 +98,6 @@ impl QueryPart {
                     .unwrap_or(0_i32)
                     / 2;
 
-                // sort by score, if scores are equal by alphabetical order
-                scored_dirs.sort_unstable_by(|a, b| {
-                    a.score()
-                        .cmp(&b.score())
-                        .then(a.directory().location().cmp(b.directory().location()))
-                });
-
                 scored_dirs
                     .iter()
                     // remove dirs with low score
@@ -105,7 +106,7 @@ impl QueryPart {
                             && f64::from(scored_dir.score()) >= average_score
                             && scored_dir.score() >= half_of_highest_score
                     })
-                    .map(|scored_dir| scored_dir.directory().clone())
+                    .cloned()
                     .collect()
             }
         }
