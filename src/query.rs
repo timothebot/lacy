@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::{
-    directory::{sub_directories, Directory},
+    directory::{sub_directories, Directory, ScoredDirectory},
     query_part::QueryPart,
 };
 
@@ -52,11 +52,12 @@ impl From<String> for Query {
 }
 
 impl Query {
-    pub fn results(&self, cwd: &Path) -> Vec<PathBuf> {
+    pub fn results(&self, cwd: &Path) -> Vec<(PathBuf, i32)> {
         let Some(start_dir) = Directory::try_from(cwd).ok() else {
             return vec![];
         };
-        let mut directories = vec![start_dir];
+
+        let mut directories = vec![ScoredDirectory::new(start_dir, 0)];
         for part in self.parts() {
             directories = part.matching_directories(&directories);
         }
@@ -65,31 +66,32 @@ impl Query {
         match env::var("LACY_FILTER_CWD").as_deref() {
             Ok("0") => (),
             Ok("2") => directories.retain(|dir| {
-                !fs::canonicalize(dir.location()).is_ok_and(|dir| cwd.starts_with(dir))
+                !fs::canonicalize(dir.directory().location()).is_ok_and(|dir| cwd.starts_with(dir))
             }),
-            Ok("1") | Ok(_) | Err(_) => directories
-                .retain(|dir| !fs::canonicalize(dir.location()).is_ok_and(|dir| dir == cwd)),
+            Ok("1") | Ok(_) | Err(_) => directories.retain(|dir| {
+                !fs::canonicalize(dir.directory().location()).is_ok_and(|dir| dir == cwd)
+            }),
         }
 
         directories
             .iter()
-            .map(|dir| dir.location().to_path_buf())
+            .map(|dir| (dir.directory().location().to_owned(), dir.score()))
             .collect()
     }
 
-    pub fn completions(&self, cwd: &Path) -> Vec<PathBuf> {
+    pub fn completions(&self, cwd: &Path) -> Vec<(PathBuf, i32)> {
         if self.query.trim().is_empty() {
             return sub_directories(cwd, 0)
                 .iter()
-                .map(|dir| dir.location().to_path_buf())
+                .map(|dir| (dir.location().to_owned(), 0))
                 .collect();
         }
         if self.query.ends_with(' ') {
             return self
                 .results(cwd)
                 .iter()
-                .flat_map(|dir| sub_directories(dir, 0))
-                .map(|dir| dir.location().to_path_buf())
+                .flat_map(|dir| sub_directories(&dir.0, 0))
+                .map(|dir| (dir.location().to_owned(), 0))
                 .collect();
         }
         if let QueryPart::Text(_) = &self.parts.last().unwrap_or(&QueryPart::Root) {

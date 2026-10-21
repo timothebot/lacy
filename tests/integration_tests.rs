@@ -8,7 +8,9 @@ fn symlink<P: AsRef<std::path::Path>, Q: AsRef<std::path::Path>>(
     std::os::windows::fs::symlink_dir(src, dst)
 }
 use std::{
+    collections::BTreeSet,
     fs::{self, canonicalize},
+    io,
     path::PathBuf,
 };
 
@@ -77,9 +79,13 @@ impl TempEnv {
         Self { dir: tmpdir }
     }
 
-    fn resolve_query(&self, query: &str) -> Vec<PathBuf> {
+    fn resolve_query(&self, query: &str) -> BTreeSet<PathBuf> {
         let query = Query::from(query.to_string());
-        query.results(self.dir.path())
+        query
+            .results(self.dir.path())
+            .into_iter()
+            .map(|(path, _)| path)
+            .collect()
     }
 
     fn abs_path(&self, path: &str) -> PathBuf {
@@ -94,7 +100,7 @@ impl TempEnv {
 #[test]
 fn test_absolute() {
     let env = TempEnv::new();
-    assert_eq!(env.resolve_query("/"), vec![env.abs_path("/")]);
+    assert_eq!(env.resolve_query("/"), [env.abs_path("/")].into());
 }
 
 #[test]
@@ -109,19 +115,19 @@ fn test_alpha() {
 
     assert_eq!(
         env.resolve_query("test alph alp"),
-        vec![env.abs_path("test/alpha/alpha")]
+        [env.abs_path("test/alpha/alpha")].into()
     );
     assert_eq!(
         env.resolve_query("tst eps bta om9 0"),
-        vec![env.abs_path("test/epsilon/beta/omega9/alpha0")]
+        [env.abs_path("test/epsilon/beta/omega9/alpha0")].into()
     );
     assert_eq!(
         env.resolve_query("test delta gamma"),
-        vec![env.abs_path("test/delta/gamma7")]
+        [env.abs_path("test/delta/gamma7")].into()
     );
     assert_eq!(
         env.resolve_query("test delta gamma "),
-        vec![env.abs_path("test/delta/gamma7")]
+        [env.abs_path("test/delta/gamma7")].into()
     );
 }
 
@@ -131,10 +137,11 @@ fn test_multiple_matches() {
 
     assert_eq!(
         env.resolve_query("test alpha beta a"),
-        vec![
+        [
             env.abs_path("test/alpha/beta/delta6"),
             env.abs_path("test/alpha/beta/gamma3"),
         ]
+        .into(),
     );
 }
 
@@ -144,19 +151,19 @@ fn test_alpha_with_slashes() {
 
     assert_eq!(
         env.resolve_query("test alph/alp"),
-        vec![env.abs_path("test/alpha/alpha")]
+        [env.abs_path("test/alpha/alpha")].into()
     );
     assert_eq!(
         env.resolve_query("tst/eps/bta/om9/0"),
-        vec![env.abs_path("test/epsilon/beta/omega9/alpha0")]
+        [env.abs_path("test/epsilon/beta/omega9/alpha0")].into()
     );
     assert_eq!(
         env.resolve_query("test/delta gamma"),
-        vec![env.abs_path("test/delta/gamma7")]
+        [env.abs_path("test/delta/gamma7")].into()
     );
     assert_eq!(
         env.resolve_query("test delta gamma"),
-        vec![env.abs_path("test/delta/gamma7")]
+        [env.abs_path("test/delta/gamma7")].into()
     );
 }
 
@@ -166,15 +173,15 @@ fn test_multiple_spaces_or_slashes() {
 
     assert_eq!(
         env.resolve_query("test  alph alp"),
-        vec![env.abs_path("test/alpha/alpha")]
+        [env.abs_path("test/alpha/alpha")].into()
     );
     assert_eq!(
         env.resolve_query("tst eps bta  om9 0"),
-        vec![env.abs_path("test/epsilon/beta/omega9/alpha0")]
+        [env.abs_path("test/epsilon/beta/omega9/alpha0")].into()
     );
     assert_eq!(
         env.resolve_query("test /delta   gamma"),
-        vec![env.abs_path("test/delta/gamma7")]
+        [env.abs_path("test/delta/gamma7")].into()
     );
 }
 
@@ -184,22 +191,23 @@ fn test_dir_skip() {
 
     assert_eq!(
         env.resolve_query("test gamma - u"),
-        vec!(
+        [
             env.abs_path("test/gamma/sigm#a/upsilon3"),
             env.abs_path("test/gamma/sigma9/t@u0"),
-        )
+        ]
+        .into()
     );
     assert_eq!(
         env.resolve_query("test alpha - epsil#on et4"),
-        vec![env.abs_path("test/alpha/betabeta/epsil#on/eta4")]
+        [env.abs_path("test/alpha/betabeta/epsil#on/eta4")].into()
     );
     assert_eq!(
         env.resolve_query("test alpha - - et4"),
-        vec![env.abs_path("test/alpha/betabeta/epsil#on/eta4")]
+        [env.abs_path("test/alpha/betabeta/epsil#on/eta4")].into()
     );
     assert_eq!(
         env.resolve_query("- alpha"),
-        vec![env.abs_path("test/alpha")]
+        [env.abs_path("test/alpha")].into()
     );
 }
 
@@ -209,11 +217,11 @@ fn test_numeric_suffixes() {
 
     assert_eq!(
         env.resolve_query("test epsilon beta beta2 3"),
-        vec![env.abs_path("test/epsilon/beta/beta2/gamma3")]
+        [env.abs_path("test/epsilon/beta/beta2/gamma3")].into()
     );
     assert_eq!(
         env.resolve_query("test beta 9"),
-        vec![env.abs_path("test/beta/mu9")]
+        [env.abs_path("test/beta/mu9")].into()
     );
 }
 
@@ -223,15 +231,15 @@ fn test_real_paths() {
 
     assert_eq!(
         env.resolve_query("test alpha/beta del6"),
-        vec![env.abs_path("test/alpha/beta/delta6")]
+        [env.abs_path("test/alpha/beta/delta6")].into()
     );
     assert_eq!(
         env.resolve_query("test /alpha/beta del6"),
-        vec![env.abs_path("test/alpha/beta/delta6")]
+        [env.abs_path("test/alpha/beta/delta6")].into()
     );
     assert_eq!(
         env.resolve_query("test /alpha/beta/ del6"),
-        vec![env.abs_path("test/alpha/beta/delta6")]
+        [env.abs_path("test/alpha/beta/delta6")].into()
     );
 }
 
@@ -241,53 +249,53 @@ fn test_symlinks() {
 
     assert_eq!(
         env.resolve_query("test link beta"),
-        vec![env.abs_path("test/link/beta")]
+        [env.abs_path("test/link/beta")].into()
     );
     assert_eq!(
         env.resolve_query("test link - gamma3"),
-        vec![env.abs_path("test/link/beta/gamma3")]
+        [env.abs_path("test/link/beta/gamma3")].into()
     );
     assert_eq!(
         env.resolve_query("test - beta gamma3"),
-        vec![
+        [
+            env.abs_path("test/link/beta/gamma3"),
             env.abs_path("test/alpha/beta/gamma3"),
-            env.abs_path("test/link/beta/gamma3")
         ]
+        .into()
     );
 }
 
 #[test]
-fn test_dots() {
+fn test_dots() -> io::Result<()> {
     let env = TempEnv::new();
 
-    fn resolve_query(path: PathBuf, query: &str) -> Vec<PathBuf> {
+    fn resolve_query(path: PathBuf, query: &str) -> io::Result<BTreeSet<PathBuf>> {
         let query = Query::from(query.to_string());
         query
             .results(&path)
-            .iter()
+            .into_iter()
+            .map(|(path, _)| path)
             // without canonicalize, `resolve_query(env.abs_path("epsilon/beta/chi6"), "..")`
             // would just return `epsilon/beta/chi6/..`, which is fine for actual usage
             // since it is further resolved by the os, but not for testing.
             .map(canonicalize)
             .collect::<Result<_, _>>()
-            .unwrap()
     }
 
     assert_eq!(
-        resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".."),
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), "..")?,
         // i don't know why but macos is angry without canonicalize
         // see https://github.com/timothebot/lacy/actions/runs/25148442151/job/74187399440?pr=66
-        vec![env.abs_path("test/epsilon/beta").canonicalize().unwrap()]
+        [env.abs_path("test/epsilon/beta").canonicalize()?].into()
     );
     assert_eq!(
-        resolve_query(env.abs_path("test/epsilon/beta/chi6"), "..."),
-        vec![env.abs_path("test/epsilon").canonicalize().unwrap()]
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), "...")?,
+        [env.abs_path("test/epsilon").canonicalize()?].into()
     );
     assert_eq!(
-        resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".. delta"),
-        vec![env
-            .abs_path("test/epsilon/beta/del@ta")
-            .canonicalize()
-            .unwrap()]
+        resolve_query(env.abs_path("test/epsilon/beta/chi6"), ".. delta")?,
+        [env.abs_path("test/epsilon/beta/del@ta").canonicalize()?].into()
     );
+
+    Ok(())
 }
