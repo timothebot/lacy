@@ -31,11 +31,13 @@ module lacy {
             let selected = ($new_path | {{ custom_fuzzy.cmd }})
             if ($selected | path exists) {
                 {{ cd }} $selected
+            } else {
+                error make $"You've selected ($selected), but somehow it doesn't exist. This is a bug, please report it: `https://github.com/timothebot/lacy/issues`"
             }
         {% endif %} } else if ($new_path | path exists) {
             {{ cd }} $new_path
         } else {
-            print $"Error: No matching directory found for '($query)'"
+            error make $"No matching directory found for '($query)'"
         }
     }
 }
