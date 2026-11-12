@@ -11,14 +11,14 @@ module lacy {
         return (lacy complete --basename -- $query | split row " " | uniq)
     }
 
-    def lacy-dir-names [context: string] {
+    def lacy-dir-names [buffer, place] {
         {
             options: {
                 case_sensitive: false,
                 completion_algorithm: fuzzy,
                 sort: false,
             },
-            completions: (lacy-query-to-completion $context)
+            completions: (lacy-query-to-completion $buffer)
         }
     }
 
@@ -29,12 +29,10 @@ module lacy {
             {{ cd }} ~
         {% if custom_fuzzy.enabled %} } else if ($new_path | str contains "\n") {
             let selected = ($new_path | {{ custom_fuzzy.cmd }})
-            if ($selected | path exists) and ($selected | path type) == "dir" {
+            if ($selected | path exists) {
                 {{ cd }} $selected
             }
-            # Even though path type normally also checks for path existing,
-            # for some reason (nothing) | path type is "dir". Likely a bug.
-        {% endif %} } else if ($new_path | path exists) and ($new_path | path type) in ["dir", "symlink"] {
+        {% endif %} } else if ($new_path | path exists) {
             {{ cd }} $new_path
         } else {
             print $"Error: No matching directory found for '($query)'"
